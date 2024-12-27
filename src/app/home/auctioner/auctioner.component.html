@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auction Bazaar</title>
+</head>
+<body class="login-background">
+
+  <div class="navbar">
+    <div class="navbar-brand">
+      <h2>Auction Bazaar</h2>
+    </div>
+    <div class="navbar-menu">
+      <a href="#" class="nav-item">Dashboard</a>
+
+      <!-- Dropdown Menu for Categories -->
+      <div class="nav-item dropdown">
+        <a href="javascript:void(0)" class="dropdown-toggle">Your Products</a>
+        <div class="dropdown-menu">
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('electronics')">Electronics</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('fashion')">Fashion</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('others')">Others</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('all')">All</a>
+        </div>
+      </div>
+      <a href="javascript:void(0)" class="nav-item" (click)="toggleAddProduct()">Add Product</a>
+      <a href="#" class="nav-item logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="auctioneer-container">
+    <div class="sidebar">
+      <div class="profile">
+        <img src="assets/profile-placeholder.jpg" alt="Profile Picture" />
+        <h3>Mohamed Elseller</h3>
+        <p>AUCTION MANAGER</p>
+      </div>
+    </div>
+
+    <div class="main-content" id="products">
+      <h2>Your Products</h2>
+
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <input
+          type="text"
+          placeholder="Search Products..."
+          (input)="searchProducts($event)"
+        />        
+      </div>
+
+      <!-- Product Grid -->
+      <div class="product-grid">
+        <div
+          *ngFor="let product of filteredProducts"
+          class="product-card"
+        >
+          <img [src]="product.image" alt="Product Image" />
+          <h4>{{ product.name }}</h4>
+          <p>Starting Price: ${{ product.price }}</p>
+          <button class="sold-button">Sold [See Winner]</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-product" [ngClass]="{ 'slide-in': showAddProduct, 'slide-out': !showAddProduct }">
+      <h3>Submit New Product</h3>
+      <form [formGroup]="auctionForm" (ngSubmit)="submitProduct()">
+        <input formControlName="productName" type="text" placeholder="Product Name" />
+        <input formControlName="minimumPrice" type="number" placeholder="Minimum Price" />
+        <select formControlName="productCategory">
+          <option value="electronics">Electronics</option>
+          <option value="fashion">Fashion</option>
+          <option value="others">Others</option>
+        </select>
+        <input formControlName="sessionDate" type="date" />
+        <input formControlName="sessionTime" type="time" />
+        <input type="file" (change)="onFileSelect($event)" />
+        <img *ngIf="selectedImage" [src]="selectedImage" alt="Preview" class="image-preview" />
+        <button type="submit">Submit Product</button>
+        <button type="button" (click)="cancel()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
+
+  

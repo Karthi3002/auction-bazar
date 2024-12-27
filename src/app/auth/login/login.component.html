@@ -1,0 +1,84 @@
+<body>
+    <P class="title">AUCTION BAZAAR</P>
+<div class="form-container">
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <div class="input-icon">
+        <i class="fa fa-envelope"></i>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="Enter your email"
+        required
+      />
+      </div>
+      <small *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+        Please enter a valid email.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <div class="input-icon">
+        <i class="fa fa-lock"></i> <!-- Lock Icon -->
+        <input
+          id="password"
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Enter your password"
+          required
+          (focus)="onPasswordFocus()"
+          (input)="onPasswordInput()"
+          (blur)="onPasswordBlur()"
+        />
+        <!-- Eye Icon Button for Show/Hide Password -->
+        <span
+        class="toggle-icon"
+        (click)="togglePasswordVisibility()"
+      >
+        <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+      </span>
+    </div>
+    
+      <!-- Password Description -->
+      <small *ngIf="showPasswordDescription && !isPasswordValid" class="password-description">
+        Password must be at least 6 characters.
+      </small>
+    </div>
+    
+
+    <!-- New Fields for Auction Bazaar -->
+    <div class="form-group">
+      <label for="role">User Role</label>
+      <div class="input-icon">
+        <i class="fas fa-user-tag"></i>
+      <select
+        id="role"
+        formControlName="role"
+        required
+      >
+        <option value="Auctioner">Auctioner</option>
+        <option value="Bidder">Bidder</option>
+      </select>
+      </div>
+      <small *ngIf="loginForm.get('role')?.invalid && loginForm.get('role')?.touched">
+        Please select a role.
+      </small>
+    </div>
+
+    <button type="submit" [disabled]="loginForm.invalid">Login</button>
+
+    <!-- Links for Forgot Password and Register -->
+    <div class="links">
+      <a (click)="navigateToPasswordRecovery()">Forgot Password?</a>
+      <p>
+        Don't have an account? 
+        <a (click)="navigateToRegister()">Register here</a>
+      </p>
+    </div>
+  </form>
+</div>
+</body>
