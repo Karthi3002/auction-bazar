@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AuctionerComponent } from './auctioner.component';
+import { AuctioneerComponent } from './auctioner.component';
 
 describe('AuctionerComponent', () => {
-  let component: AuctionerComponent;
-  let fixture: ComponentFixture<AuctionerComponent>;
+  let component: AuctioneerComponent;
+  let fixture: ComponentFixture<AuctioneerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuctionerComponent]
+      imports: [AuctioneerComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AuctionerComponent);
+    fixture = TestBed.createComponent(AuctioneerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

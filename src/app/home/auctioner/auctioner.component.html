@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auction Bazaar</title>
-</head>
-<body class="login-background">
-
+<body class="main-background">
   <div class="navbar">
     <div class="navbar-brand">
       <h2>Auction Bazaar</h2>
@@ -40,22 +32,15 @@
 
     <div class="main-content" id="products">
       <h2>Your Products</h2>
-
-      <!-- Search Bar -->
       <div class="search-bar">
         <input
           type="text"
           placeholder="Search Products..."
           (input)="searchProducts($event)"
-        />        
+        />
       </div>
-
-      <!-- Product Grid -->
       <div class="product-grid">
-        <div
-          *ngFor="let product of filteredProducts"
-          class="product-card"
-        >
+        <div *ngFor="let product of filteredProducts" class="product-card">
           <img [src]="product.image" alt="Product Image" />
           <h4>{{ product.name }}</h4>
           <p>Starting Price: ${{ product.price }}</p>
@@ -83,8 +68,7 @@
       </form>
     </div>
   </div>
-
 </body>
-</html>
+
 
   
