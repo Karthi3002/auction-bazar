@@ -10,18 +10,24 @@ import { ReactiveFormsModule } from '@angular/forms';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
-  totalAuctions: number = 120; // Example value
-  upcomingAuctions: number = 15; // Example value
-  ongoingAuctions: number = 30; // Example value
-  completedAuctions: number = 75; // Example value
-  totalRevenue: number = 200000; // Example value
-  activeAuctions: number = 8; // Example value
-  recentProducts: number = 25; // Example value
-  totalProductsSold: number = 150; // Example value
+
+  totalAuctions: number | undefined;
+  upcomingAuctions: number | undefined;
+  ongoingAuctions: number | undefined;
+  completedAuctions: number | undefined;
+  totalRevenue: number | undefined;
+  auctionProgress: number | undefined;
 
   constructor() { }
 
   ngOnInit(): void {
-    // You can fetch data from a service if needed
+    // Sample data or fetch from an API
+    this.totalAuctions = 20;
+    this.upcomingAuctions = 5;
+    this.ongoingAuctions = 10;
+    this.completedAuctions = 5;
+    this.totalRevenue = 50000;
+    this.auctionProgress = (this.completedAuctions / this.totalAuctions) * 100;
   }
+
 }

@@ -1,48 +1,110 @@
 <div class="dashboard-container">
-    <!-- Sidebar with Auctioneer Details -->
-    <div class="sidebar">
-      <div class="profile">
-        <img src="assets/profile-placeholder.jpg" alt="Profile Picture" class="profile-img"/>
-        <h3>Mohamed Elseller</h3>
-        <p>AUCTION MANAGER</p>
+    <!-- Section: Auctioneer Personal Details -->
+    <div class="section personal-details">
+      <div class="section-header">
+        <h2>Auctioneer Personal Details</h2>
       </div>
-      <div class="auction-stats">
-        <h4>Auction Stats</h4>
-        <div class="stat-item">
-          <strong>Total Auctions:</strong> <span>{{ totalAuctions }}</span>
-        </div>
-        <div class="stat-item">
-          <strong>Upcoming Auctions:</strong> <span>{{ upcomingAuctions }}</span>
-        </div>
-        <div class="stat-item">
-          <strong>Ongoing Auctions:</strong> <span>{{ ongoingAuctions }}</span>
-        </div>
-        <div class="stat-item">
-          <strong>Completed Auctions:</strong> <span>{{ completedAuctions }}</span>
-        </div>
-        <div class="stat-item">
-          <strong>Total Revenue:</strong> <span>${{ totalRevenue }}</span>
+      <div class="section-content">
+        <div class="profile-info">
+          <img src="assets/profile-placeholder.jpg" alt="Profile Picture" class="profile-img" />
+          <h3>Mohamed Elseller</h3>
+          <p>AUCTION MANAGER</p>
+          <p>Email: mohamed&#64;auction.com</p>
+          <p>Phone: (123) 456-7890</p>
+          <p>Location: New York, USA</p>
+          
+          <!-- Password Information (non-input) -->
+          <div class="password-info">
+            <p>Password: ********</p> <!-- Displaying password as a placeholder -->
+          </div>
         </div>
       </div>
     </div>
   
-    <!-- Main Content Area -->
-    <div class="main-content">
-      <h2>Dashboard Overview</h2>
-      <div class="auction-info">
-        <div class="info-card">
-          <h3>Active Auctions</h3>
-          <p>{{ activeAuctions }}</p>
+    <!-- Section: Auction Details -->
+    <div class="section auction-details">
+      <div class="section-header">
+        <h2>Auction Details</h2>
+      </div>
+      <div class="section-content">
+        <div class="auction-stats">
+          <div class="stat-item">
+            <strong>Total Auctions:</strong> <span>{{ totalAuctions }}</span>
+          </div>
+          <div class="stat-item">
+            <strong>Upcoming Auctions:</strong> <span>{{ upcomingAuctions }}</span>
+          </div>
+          <div class="stat-item">
+            <strong>Ongoing Auctions:</strong> <span>{{ ongoingAuctions }}</span>
+          </div>
+          <div class="stat-item">
+            <strong>Completed Auctions:</strong> <span>{{ completedAuctions }}</span>
+          </div>
+          <div class="stat-item">
+            <strong>Total Revenue:</strong> <span>${{ totalRevenue }}</span>
+          </div>
         </div>
-        <div class="info-card">
-          <h3>Recent Products</h3>
-          <p>{{ recentProducts }}</p>
+      </div>
+    </div>
+  
+    <!-- Section: Additional Details -->
+    <div class="section additional-details">
+      <div class="section-header">
+        <h2>Additional Auction Details</h2>
+      </div>
+      <div class="section-content">
+        <!-- Auction Progress Bar -->
+        <div class="progress-bar-container">
+          <h3>Auction Progress</h3>
+          <div class="progress-bar">
+            <div class="progress" [ngStyle]="{ width: auctionProgress + '%' }"></div>
+          </div>
+          <p>{{ auctionProgress }}% of total auctions completed</p>
         </div>
-        <div class="info-card">
-          <h3>Total Products Sold</h3>
-          <p>{{ totalProductsSold }}</p>
+  
+        <!-- Auction Stats Table -->
+        <div class="table-container">
+          <h3>Auction Overview</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Auction Type</th>
+                <th>Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Total Auctions</td>
+                <td>{{ totalAuctions }}</td>
+                <td>Active</td>
+              </tr>
+              <tr>
+                <td>Upcoming Auctions</td>
+                <td>{{ upcomingAuctions }}</td>
+                <td>Scheduled</td>
+              </tr>
+              <tr>
+                <td>Ongoing Auctions</td>
+                <td>{{ ongoingAuctions }}</td>
+                <td>Live</td>
+              </tr>
+              <tr>
+                <td>Completed Auctions</td>
+                <td>{{ completedAuctions }}</td>
+                <td>Finished</td>
+              </tr>
+              <tr>
+                <td>Total Revenue</td>
+                <td>${{ totalRevenue }}</td>
+                <td>Accumulated</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+  
+  
   
