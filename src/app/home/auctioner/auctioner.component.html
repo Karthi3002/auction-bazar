@@ -5,10 +5,8 @@
     </div>
     <div class="navbar-menu">
       <a href="#" class="nav-item">Dashboard</a>
-
-      <!-- Dropdown Menu for Categories -->
       <div class="nav-item dropdown">
-        <a href="javascript:void(0)" class="dropdown-toggle">Your Products</a>
+        <a href="javascript:void(0)" class="nav-item dropdown-toggle">Your Products</a>
         <div class="dropdown-menu">
           <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('electronics')">Electronics</a>
           <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('fashion')">Fashion</a>
@@ -33,11 +31,7 @@
     <div class="main-content" id="products">
       <h2>Your Products</h2>
       <div class="search-bar">
-        <input
-          type="text"
-          placeholder="Search Products..."
-          (input)="searchProducts($event)"
-        />
+        <input type="text" placeholder="Search Products..." (input)="searchProducts($event)" />
       </div>
       <div class="product-grid">
         <div *ngFor="let product of filteredProducts" class="product-card">
@@ -50,25 +44,105 @@
     </div>
 
     <div class="add-product" [ngClass]="{ 'slide-in': showAddProduct, 'slide-out': !showAddProduct }">
-      <h3>Submit New Product</h3>
+      <h3>Add New Product</h3>
       <form [formGroup]="auctionForm" (ngSubmit)="submitProduct()">
-        <input formControlName="productName" type="text" placeholder="Product Name" />
-        <input formControlName="minimumPrice" type="number" placeholder="Minimum Price" />
-        <select formControlName="productCategory">
+        <!-- Product Name -->
+        <label for="productName">Product Name:</label>
+        <input
+          id="productName"
+          formControlName="productName"
+          type="text"
+          placeholder="Enter Product Name"
+          (input)="checkFormValidity()"
+          required
+        />
+        <div *ngIf="auctionForm.get('productName')?.invalid && auctionForm.get('productName')?.touched" class="error-message">
+          Product Name is required.
+        </div>
+    
+        <!-- Minimum Price -->
+        <label for="minimumPrice">Minimum Price:</label>
+        <input
+          id="minimumPrice"
+          formControlName="minimumPrice"
+          type="number"
+          placeholder="Enter Minimum Price"
+          (input)="checkFormValidity()"
+          required
+        />
+        <div *ngIf="auctionForm.get('minimumPrice')?.invalid && auctionForm.get('minimumPrice')?.touched" class="error-message">
+          Minimum Price is required.
+        </div>
+    
+        <!-- Product Category -->
+        <label for="productCategory">Product Category:</label>
+        <select
+          id="productCategory"
+          formControlName="productCategory"
+          (change)="checkFormValidity()"
+          required
+        >
+          <option value="" disabled selected>Select Product Category</option>
           <option value="electronics">Electronics</option>
           <option value="fashion">Fashion</option>
           <option value="others">Others</option>
         </select>
-        <input formControlName="sessionDate" type="date" />
-        <input formControlName="sessionTime" type="time" />
-        <input type="file" (change)="onFileSelect($event)" />
+        <div *ngIf="auctionForm.get('productCategory')?.invalid && auctionForm.get('productCategory')?.touched" class="error-message">
+          Product Category is required.
+        </div>
+    
+        <!-- Session Date -->
+        <label for="sessionDate">Session Date:</label>
+        <input
+          id="sessionDate"
+          formControlName="sessionDate"
+          type="date"
+          (input)="checkFormValidity()"
+          required
+        />
+        <div *ngIf="auctionForm.get('sessionDate')?.invalid && auctionForm.get('sessionDate')?.touched" class="error-message">
+          Session Date is required.
+        </div>
+    
+        <!-- Session Time -->
+        <label for="sessionTime">Session Time:</label>
+        <input
+          id="sessionTime"
+          formControlName="sessionTime"
+          type="time"
+          (input)="checkFormValidity()"
+          required
+        />
+        <div *ngIf="auctionForm.get('sessionTime')?.invalid && auctionForm.get('sessionTime')?.touched" class="error-message">
+          Session Time is required.
+        </div>
+    
+        <!-- Product Image -->
+        <label for="productImage">Product Image:</label>
+        <input
+          id="productImage"
+          type="file"
+          (change)="onSelect($event)"
+          required
+        />
+        <div *ngIf="!selectedImage && auctionForm.get('image')?.touched" class="error-message">
+          Product image is required.
+        </div>
         <img *ngIf="selectedImage" [src]="selectedImage" alt="Preview" class="image-preview" />
-        <button type="submit">Submit Product</button>
-        <button type="button" (click)="cancel()">Cancel</button>
+    
+        <!-- Submit Button -->
+        <button type="submit" [disabled]="isSubmitDisabled">Submit Product</button>
+        <button type="button" (click)="oncancel()">Cancel</button>
       </form>
-    </div>
+    
+      <!-- Success Message -->
+      <div *ngIf="isProductSubmitted" class="success-message">
+        ✅ Product submitted successfully!
+      </div>    
+    </div>    
   </div>
 </body>
+
 
 
   
