@@ -1,0 +1,48 @@
+<div class="dashboard-container">
+    <!-- Sidebar with Auctioneer Details -->
+    <div class="sidebar">
+      <div class="profile">
+        <img src="assets/profile-placeholder.jpg" alt="Profile Picture" class="profile-img"/>
+        <h3>Mohamed Elseller</h3>
+        <p>AUCTION MANAGER</p>
+      </div>
+      <div class="auction-stats">
+        <h4>Auction Stats</h4>
+        <div class="stat-item">
+          <strong>Total Auctions:</strong> <span>{{ totalAuctions }}</span>
+        </div>
+        <div class="stat-item">
+          <strong>Upcoming Auctions:</strong> <span>{{ upcomingAuctions }}</span>
+        </div>
+        <div class="stat-item">
+          <strong>Ongoing Auctions:</strong> <span>{{ ongoingAuctions }}</span>
+        </div>
+        <div class="stat-item">
+          <strong>Completed Auctions:</strong> <span>{{ completedAuctions }}</span>
+        </div>
+        <div class="stat-item">
+          <strong>Total Revenue:</strong> <span>${{ totalRevenue }}</span>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <h2>Dashboard Overview</h2>
+      <div class="auction-info">
+        <div class="info-card">
+          <h3>Active Auctions</h3>
+          <p>{{ activeAuctions }}</p>
+        </div>
+        <div class="info-card">
+          <h3>Recent Products</h3>
+          <p>{{ recentProducts }}</p>
+        </div>
+        <div class="info-card">
+          <h3>Total Products Sold</h3>
+          <p>{{ totalProductsSold }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  

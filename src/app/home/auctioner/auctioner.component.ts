@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -82,7 +83,7 @@ export class AuctioneerComponent {
   @ViewChild('products') productsSection!: ElementRef;
   isProductSubmitted: boolean | undefined;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder ,private router: Router) {
     this.auctionForm = this.fb.group({
       productName: ['', Validators.required],
       minimumPrice: ['', [Validators.required, Validators.min(1)]],
@@ -157,6 +158,11 @@ export class AuctioneerComponent {
   checkFormValidity(): void {
     this.isSubmitDisabled = !this.auctionForm.valid || !this.selectedImage;
   }
+
+  navigateToDashboard(): void {
+    this.router.navigate(['/dashboard']);
+  }
+  
 
   oncancel(): void {
     this.auctionForm.reset();
