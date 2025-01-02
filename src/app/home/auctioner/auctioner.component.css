@@ -112,6 +112,10 @@ body.main-background {
   flex-shrink: 0;
   position: relative;
   z-index: 10;
+  background-size: cover; /* Ensure the image covers the entire sidebar */
+  background-position: center; /* Center the image */
+  opacity: 0.8; /* Reduce opacity for blending */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -189,8 +193,19 @@ body.main-background {
   margin-top: 20px;
   max-height: 500px; /* Fixed height for the "Your Products" section */
   overflow-y: auto; /* Enable scrolling for the products */
+  animation: fadeIn 0.5s ease-in-out; /* Animation for products */
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .product-card {
   background: rgba(255, 255, 255, 0.2);

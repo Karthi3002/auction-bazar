@@ -65,7 +65,7 @@ export class LoginComponent {
 
         if (formValues.role === 'Auctioner') {
           this.router.navigate(['/auctioner']); 
-        } else if (formValues.role === 'bidder') {
+        } else if (formValues.role === 'Bidder') {
           this.router.navigate(['/bidder']);
         } else {
           console.log('Invalid role selected!');
