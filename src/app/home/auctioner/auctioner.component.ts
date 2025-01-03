@@ -1,14 +1,15 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-auctioneer',
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './auctioner.component.html',
   styleUrls: ['./auctioner.component.css'],
-  imports: [CommonModule, ReactiveFormsModule],
+
 })
 export class AuctioneerComponent {
   auctionForm: FormGroup;

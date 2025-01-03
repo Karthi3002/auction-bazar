@@ -1,94 +1,52 @@
-<div class="bidder-page">
-    <!-- Header Section -->
-    <div class="header">
-      <h1>Auction Bazaar</h1>
-      <nav>
-        <a routerLink="/dashboard">Dashboard</a>
-        <a routerLink="/bids">Your Bids</a>
-        <a routerLink="/watchlist">Watchlist</a>
-        <a routerLink="/profile">Profile</a>
-        <a routerLink="/logout">Logout</a>
-      </nav>
+<body>
+  <div class="navbar">
+    <div class="navbar-brand">
+      <h2>Auction Bazaar</h2>
     </div>
-  
-    <!-- Main Content Section -->
-    <div class="content">
-      <!-- Bidder Info Section -->
-      <div class="bidder-info">
-        <img src="assets/bidder-icon.png" alt="Bidder Icon" />
-        <h2>Welcome, Karthi</h2>
-        <p>Bidder | karthi16&#64;gmail.com</p>
-        <p>Total Bids Placed: 25</p>
-        <p>Bids Won: 5</p>
+    <div class="navbar-menu">
+      <a href="javascript:void(0)" class="nav-item" (click)="navigateToDashboard()">Dashboard</a>
+      <a href="javascript:void(0)" class="nav-item" (click)="viewProducts()">Bid on Products</a>
+      <a href="javascript:void(0)" class="nav-item" (click)="viewYourBids()">Your Bids</a>
+      <a href="#" class="nav-item logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="bidder-container">
+    <div class="sidebar">
+      <img src="assets/bidder.jpg" alt="Bidder" />
+      <h1>Welcome, Bidder</h1>
+      <p>Bidder | bidder&#64;example.com</p>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="products" *ngIf="showProducts">
+      <h2>Bid on Products</h2>
+      <div class="search-bar">
+        <input type="text" placeholder="Search Products..." (input)="searchProducts($event)" />
       </div>
-  
-      <!-- Active Auctions Section -->
-      <div class="products-section">
-        <h3>Active Auctions</h3>
-        <div class="filters">
-          <input
-            type="text"
-            placeholder="Search Auctions..."
-            class="search-bar"
-            (input)="onSearch($event)"
-          />
-          <select (change)="filterByCategory($event)">
-            <option value="">All Categories</option>
-            <option value="electronics">Electronics</option>
-            <option value="fashion">Fashion</option>
-            <option value="home">Home</option>
-          </select>
-          <select (change)="sortAuctions($event)">
-            <option value="endingSoon">Ending Soon</option>
-            <option value="highestBid">Highest Bid</option>
-            <option value="lowestBid">Lowest Bid</option>
-          </select>
-        </div>
-        <div class="product-cards">
-          <div class="product-card" *ngFor="let auction of filteredAuctions">
-            <img [src]="auction.image" alt="Product Image" />
-            <h4>{{ auction.name }}</h4>
-            <p>Current Bid: ${{ auction.currentBid }}</p>
-            <p>Time Remaining: {{ auction.timeRemaining }}</p>
-            <button (click)="placeBid(auction)">Place Bid</button>
-          </div>
+      <div class="product-grid">
+        <div *ngFor="let product of filteredProducts" class="product-card">
+          <img [src]="product.image" alt="Product Image" />
+          <h4>{{ product.name }}</h4>
+          <p>Starting Price: ${{ product.price }}</p>
+          <button class="bid-button" (click)="placeBid(product)">Place Bid</button>
         </div>
       </div>
-  
-      <!-- Bid History Section -->
+    </div>
+
+    <div class="main-content" id="bids" *ngIf="showBids">
+      <h2>Your Bids</h2>
       <div class="bid-history">
-        <h3>Bid History</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Your Bid</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let bid of bidHistory">
-              <td>{{ bid.productName }}</td>
-              <td>${{ bid.amount }}</td>
-              <td [class.won]="bid.status === 'Won'">{{ bid.status }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  
-      <!-- Watchlist Section -->
-      <div class="watchlist">
-        <h3>Watchlist</h3>
-        <div class="product-cards">
-          <div class="product-card" *ngFor="let item of watchlist">
-            <img [src]="item.image" alt="Product Image" />
-            <h4>{{ item.name }}</h4>
-            <p>Starting Price: ${{ item.startingPrice }}</p>
-            <button (click)="removeFromWatchlist(item.id)">Remove</button>
-          </div>
+        <div *ngFor="let bid of yourBids" class="bid-card">
+          <p>Product: {{ bid.productName }}</p>
+          <p>Bid Amount: ${{ bid.amount }}</p>
+          <p>Status: {{ bid.status }}</p>
         </div>
       </div>
     </div>
   </div>
-  
+</body>
+
+
+
   

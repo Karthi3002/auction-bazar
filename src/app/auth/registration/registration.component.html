@@ -79,6 +79,20 @@
       </div>
     </div>
 
+  <!-- Profile Image -->
+  <div>
+    <label for="profileImage">Profile Image</label>
+    <input
+      id="profileImage"
+      type="file"
+      (change)="onFileSelected($event)"
+      accept="image/*"
+      required
+    />
+  </div>
+  <div *ngIf="registrationForm.get('profileImage')?.touched && !selectedProfileImage" class="error">
+    Please select a profile image.
+  </div>
     <!-- Register Button -->
     <button type="submit" [disabled]="!registrationForm.valid">Register</button>
 
