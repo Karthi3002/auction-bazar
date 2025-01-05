@@ -1,0 +1,146 @@
+<body class="main-background">
+  <div class="navbar">
+    <div class="navbar-brand">
+      <h2>Auction Bazaar</h2>
+    </div>
+    <div class="navbar-menu">
+      <a href="javascript:void(0)" class="nav-item" (click)="navigateToDashboard()">Dashboard</a>
+      <div class="nav-item dropdown">
+        <a href="javascript:void(0)" class="nav-item dropdown-toggle">Your Products</a>
+        <div class="dropdown-menu">
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('electronics')">Electronics</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('fashion')">Fashion</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('others')">Others</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterProducts('all')">All</a>
+        </div>
+      </div>
+      <a href="javascript:void(0)" class="nav-item" (click)="toggleAddProduct()">Add Product</a>
+      <a href="#" class="nav-item logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="auctioneer-container">
+    <div class="sidebar">
+      <img src="auction-bazar\public\auctionner.jpg" alt="Auctioneer" />
+      <h1>Welcome, Karthi</h1>
+      <p>Auctioneer | karthi16&#64;gmail.com</p>
+    </div>
+
+    <div class="main-content" id="products">
+      <h2>Your Products</h2>
+      <div class="search-bar">
+        <input type="text" placeholder="Search Products..." (input)="searchProducts($event)" />
+      </div>
+      <div class="product-grid">
+        <div *ngFor="let product of filteredProducts" class="product-card">
+          <img [src]="product.image" alt="Product Image" />
+          <h4>{{ product.name }}</h4>
+          <p>Starting Price: ${{ product.price }}</p>
+          <button class="sold-button">Sold [See Winner]</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-product" [ngClass]="{ 'slide-in': showAddProduct, 'slide-out': !showAddProduct }">
+      <h3>Add New Product</h3>
+      <form [formGroup]="auctionForm" (ngSubmit)="submitProduct()">
+        <!-- Product Name -->
+        <label for="productName">Product Name:</label>
+        <input
+          id="productName"
+          formControlName="productName"
+          type="text"
+          placeholder="Enter Product Name"
+          (input)="checkFormValidity()"
+          required
+        />
+        <div *ngIf="auctionForm.get('productName')?.invalid && auctionForm.get('productName')?.touched" class="error-message">
+          Product Name is required.
+        </div>
+    
+        <!-- Minimum Price -->
+        <label for="minimumPrice">Minimum Price:</label>
+        <input
+          id="minimumPrice"
+          formControlName="minimumPrice"
+          type="number"
+          placeholder="Enter Minimum Price"
+          (input)="checkFormValidity()"
+          required
+        />
+        <div *ngIf="auctionForm.get('minimumPrice')?.invalid && auctionForm.get('minimumPrice')?.touched" class="error-message">
+          Minimum Price is required.
+        </div>
+    
+        <!-- Product Category -->
+        <label for="productCategory">Product Category:</label>
+        <select
+          id="productCategory"
+          formControlName="productCategory"
+          (change)="checkFormValidity()"
+          required
+        >
+          <option value="" disabled selected>Select Product Category</option>
+          <option value="electronics">Electronics</option>
+          <option value="fashion">Fashion</option>
+          <option value="others">Others</option>
+        </select>
+        <div *ngIf="auctionForm.get('productCategory')?.invalid && auctionForm.get('productCategory')?.touched" class="error-message">
+          Product Category is required.
+        </div>
+    
+        <!-- Session Date -->
+        <label for="sessionDate">Session Date:</label>
+        <input
+          id="sessionDate"
+          formControlName="sessionDate"
+          type="date"
+          (input)="checkFormValidity()"
+          required
+        />
+        <div *ngIf="auctionForm.get('sessionDate')?.invalid && auctionForm.get('sessionDate')?.touched" class="error-message">
+          Session Date is required.
+        </div>
+    
+        <!-- Session Time -->
+        <label for="sessionTime">Session Time:</label>
+        <input
+          id="sessionTime"
+          formControlName="sessionTime"
+          type="time"
+          (input)="checkFormValidity()"
+          required
+        />
+        <div *ngIf="auctionForm.get('sessionTime')?.invalid && auctionForm.get('sessionTime')?.touched" class="error-message">
+          Session Time is required.
+        </div>
+    
+        <!-- Product Image -->
+        <label for="productImage">Product Image:</label>
+        <input
+          id="productImage"
+          type="file"
+          (change)="onSelect($event)"
+          required
+        />
+        <div *ngIf="!selectedImage && auctionForm.get('image')?.touched" class="error-message">
+          Product image is required.
+        </div>
+        <img *ngIf="selectedImage" [src]="selectedImage" alt="Preview" class="image-preview" />
+    
+        <!-- Submit Button -->
+        <button type="submit" [disabled]="isSubmitDisabled">Submit Product</button>
+        <button type="button" (click)="oncancel()">Cancel</button>
+      </form>
+    
+      <!-- Success Message -->
+      <div *ngIf="isProductSubmitted" class="success-message">
+        ✅ Product submitted successfully!
+      </div>    
+    </div>    
+  </div>
+</body>
+
+
+
+  

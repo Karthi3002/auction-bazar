@@ -1,0 +1,251 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(150deg, #6A11CB , #8C0B8E, #7B0EAC);
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  top: 0;
+  left: 0;
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(150deg, #6A11CB , #8C0B8E, #7B0EAC);
+  color: #00fff7;
+  font-size: 1.8em;
+  font-style: normal;
+  padding: 10px ;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.header-title{
+  margin: 0;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.form-container {
+  max-width: 400px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.15); 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); 
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  border-radius: 15px; 
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); 
+  padding: 20px;
+  margin-top: 60px;
+  text-align: center;
+  color: #ffffff; 
+
+  .animate-fadein {
+    animation: fadeIn 1s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+h2 {
+  font-size: 2em;
+  color: #ffffff; 
+  margin-bottom: 20px;
+}
+
+  .form-group {
+    margin-bottom: 15px;
+    padding-right: 33px;
+    position: relative;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      text-align: left;
+      color: #e0e0e0; 
+    }
+
+    .password-description {
+      color: rgb(255, 193, 7); 
+      font-size: 0.9em;
+      margin-top: 5px;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .input-icon {
+      position: relative;
+    }
+
+    .toggle-icon {
+      position: absolute;
+      top: 50%;
+      right: 40px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #000000;
+      font-size: 18px;
+    }
+
+    .input-icon input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+      transition: box-shadow 0.3s ease-in-out;
+    }
+    
+    .input-icon i {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #00fff7;
+      pointer-events: none;
+    }
+    
+    .input-icon input {
+      width: 100%;
+      padding: 10px 10px 10px 35px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+    
+    input::placeholder{
+      color: rgba(240, 240, 240, 0.8);
+      font-weight: 300;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      padding-left: 35px;
+      background: rgba(255, 255, 255, 0.2); 
+      color: #000000; 
+      border: 1px solid rgba(255, 255, 255, 0.3); 
+      border-radius: 5px;
+      box-sizing: border-box;
+      transition: all 0.3s ease-in-out;
+    }
+
+    input:focus, select:focus {
+      border-color: #00fff7;
+      box-shadow: 0 0 10px rgba(0, 255, 247, 0.6);
+      transform: scale(1.02);
+      outline: none;
+    }
+    
+    small {
+      color: rgb(255, 193, 7);
+      font-size: 0.9em;
+      margin-top: 5px;
+      text-align: left;
+      display: block;
+    }
+  }
+
+
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  button:hover {
+    background: linear-gradient(to right, #0056b3, #007bff);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Disabled Button */
+  button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  a {
+    display: block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-size: 0.9em;
+}
+
+.links a {
+  color: #00fff7;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.links p {
+  text-align: right;
+  margin: 0;
+  font-size: 1em;
+  color: #000000;
+}
+
+@media screen and (max-width: 768px) {
+  h2 {
+    font-size: 1.5em;
+  }
+
+  .form-container {
+    padding: 15px;
+  }
+
+  button {
+    font-size: 0.9em;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .form-container {
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  button {
+    font-size: 0.8em;
+  }
+}
+

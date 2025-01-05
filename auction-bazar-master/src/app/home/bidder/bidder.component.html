@@ -1,0 +1,52 @@
+<body>
+  <div class="navbar">
+    <div class="navbar-brand">
+      <h2>Auction Bazaar</h2>
+    </div>
+    <div class="navbar-menu">
+      <a href="javascript:void(0)" class="nav-item" (click)="navigateToDashboard()">Dashboard</a>
+      <a href="javascript:void(0)" class="nav-item" (click)="viewProducts()">Bid on Products</a>
+      <a href="javascript:void(0)" class="nav-item" (click)="viewYourBids()">Your Bids</a>
+      <a href="#" class="nav-item logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="bidder-container">
+    <div class="sidebar">
+      <img src="assets/bidder.jpg" alt="Bidder" />
+      <h1>Welcome, Bidder</h1>
+      <p>Bidder | bidder&#64;example.com</p>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="products" *ngIf="showProducts">
+      <h2>Bid on Products</h2>
+      <div class="search-bar">
+        <input type="text" placeholder="Search Products..." (input)="searchProducts($event)" />
+      </div>
+      <div class="product-grid">
+        <div *ngFor="let product of filteredProducts" class="product-card">
+          <img [src]="product.image" alt="Product Image" />
+          <h4>{{ product.name }}</h4>
+          <p>Starting Price: ${{ product.price }}</p>
+          <button class="bid-button" (click)="placeBid(product)">Place Bid</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content" id="bids" *ngIf="showBids">
+      <h2>Your Bids</h2>
+      <div class="bid-history">
+        <div *ngFor="let bid of yourBids" class="bid-card">
+          <p>Product: {{ bid.productName }}</p>
+          <p>Bid Amount: ${{ bid.amount }}</p>
+          <p>Status: {{ bid.status }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+
+
+  

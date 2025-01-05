@@ -1,0 +1,171 @@
+/* General Layout */
+.dashboard-container {
+    margin: -8px;
+    padding: 40px;
+    background: linear-gradient(150deg, #6A11CB , #8C0B8E, #7B0EAC); /* Gradient background */
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.section {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.8s ease-out;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Section header */
+.section-header h2 {
+    font-size: 2.2em;
+    color: #FFDDC1;
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Profile Section */
+.personal-details .profile-info {
+    text-align: center;
+}
+
+.profile-img {
+    width: 120px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 2px solid white;
+}
+
+.profile-info h3 {
+    font-size: 1.8em;
+    color: #FFDDC1;
+}
+
+.profile-info p {
+    font-size: 1.2em;
+    color: #ffffff;
+}
+
+/* Password Field */
+.password-info p {
+    font-size: 1.2em;
+    color: #ffffff;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+/* Auction Stats Section */
+.auction-details .auction-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stat-item {
+    font-size: 1.2em;
+    color: #ffffff;
+}
+
+.stat-item strong {
+    color: #FFDDC1;
+}
+
+.stat-item span {
+    font-weight: bold;
+}
+
+/* Additional Details with Progress Bar and Table */
+.additional-details {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.8s ease-out;
+}
+
+.additional-details h2 {
+    font-size: 2.2em;
+    color: #FFDDC1;
+    margin-bottom: 30px;
+}
+
+.progress-bar-container {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px; /* Added margin for space between sections */
+}
+
+.progress-bar {
+    height: 20px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 10px;
+}
+
+.progress {
+    height: 100%;
+    background: #8C0B8E;
+    border-radius: 10px;
+}
+
+.table-container {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    text-align: left;
+    padding: 12px;
+    font-size: 1.1em;
+}
+
+th {
+    background: #8C0B8E;
+    color: white;
+}
+
+td {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+/* Hover Effect on Each Section */
+.section:hover {
+    transform: translateY(-10px);
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+/* Animation for Page Load */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+  
+  
+  
