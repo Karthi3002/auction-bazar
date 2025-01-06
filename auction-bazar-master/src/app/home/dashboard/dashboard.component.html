@@ -6,16 +6,23 @@
       </div>
       <div class="section-content">
         <div class="profile-info">
-          <img src="assets/profile-placeholder.jpg" alt="Profile Picture" class="profile-img" />
-          <h3>Mohamed Elseller</h3>
-          <p>AUCTION MANAGER</p>
-          <p>Email: mohamed&#64;auction.com</p>
-          <p>Phone: (123) 456-7890</p>
-          <p>Location: New York, USA</p>
+          <img
+            *ngIf="profileImageUrl; else placeholderImage"
+            [src]="profileImageUrl"
+            alt="Profile Picture"
+            class="profile-img"
+          />
+          <ng-template #placeholderImage>
+            <img src="assets/profile-placeholder.jpg" alt="Profile Picture" class="profile-img" />
+          </ng-template>
+          <h3>{{ auctioneerDetails?.username || 'Auctioneer Name' }}</h3>
+          <p>{{ auctioneerDetails?.role || 'Role not available' }}</p>
+          <p>Email: {{ auctioneerDetails?.email || 'Email not available' }}</p>
+          <p>Address: {{ auctioneerDetails?.address || 'Address not available' }}</p>
           
-          <!-- Password Information (non-input) -->
+          <!-- Password Display -->
           <div class="password-info">
-            <p>Password: ********</p> <!-- Displaying password as a placeholder -->
+            <p>Password: ********</p>
           </div>
         </div>
       </div>
