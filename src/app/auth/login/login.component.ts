@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { AuthService } from '../../../auth.service'; // Import the AuthService
 
 @Component({
   selector: 'app-login',
@@ -16,12 +18,11 @@ export class LoginComponent {
   showPasswordDescription: boolean = false; 
   isPasswordValid: boolean = false; 
 
-  constructor(private fb: FormBuilder, private router: Router) { 
+  constructor(private fb: FormBuilder, private router: Router, private firestore: Firestore,   private authService: AuthService ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       role: ['', [Validators.required]],
-      rememberMe: [false]
     });
   }
 
@@ -30,23 +31,19 @@ export class LoginComponent {
     this.showPassword = !this.showPassword;
   }
   
-
     onPasswordFocus() {
       this.showPasswordDescription = true;
     }
   
-
     onPasswordInput() {
       const passwordValue = this.loginForm.get('password')?.value || '';
       this.isPasswordValid = passwordValue.length >= 6;
   
-
       if (this.isPasswordValid) {
         this.showPasswordDescription = false;
       }
     }
   
-
     onPasswordBlur() {
       if (!this.isPasswordValid) {
         this.showPasswordDescription = true;
@@ -54,35 +51,55 @@ export class LoginComponent {
         this.showPasswordDescription = false;
       }
     }
-  
-    onSubmit(): void {
+
+    async onSubmit(): Promise<void> {
       if (this.loginForm.valid) {
-        const formValues = this.loginForm.value;
-    
+        const { email, password, role } = this.loginForm.value;
 
-        console.log('Login Details:', formValues);
-    
+        try {
+          // Determine the correct collection based on the role
+          const collectionName = role === 'Auctioner' ? 'auctioneers' : 'bidders';
 
-        if (formValues.role === 'Auctioner') {
-          this.router.navigate(['/auctioner']); 
-        } else if (formValues.role === 'Bidder') {
-          this.router.navigate(['/bidder']);
-        } else {
-          console.log('Invalid role selected!');
+          // Reference the user document in Firestore
+          const userDocRef = doc(this.firestore, `${collectionName}/${email}`);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+
+            // Validate password
+            if (userData && userData['password'] === password) {
+              alert('Login successful!');
+              this.authService.setUserEmail(email); // Store email in AuthService
+              console.log('User data:', userData);
+
+              // Navigate to the respective role's dashboard
+              if (role === 'Auctioner') {
+                this.router.navigate(['/auctioner']);
+              } else if (role === 'Bidder') {
+                this.router.navigate(['/bidder']);
+              }
+            } else {
+              alert('Invalid password. Please try again.');
+            }
+          } else {
+            alert('User not found. Please register first.');
+          }
+        } catch (error) {
+          console.error('Error during login:', error);
+          alert('An error occurred during login. Please try again.');
         }
       } else {
-        console.log('Form is invalid');
+        alert('Please fill out all fields correctly.');
       }
     }
-    
+
 
   navigateToRegister(): void {
     this.router.navigate(['/registration']); 
   }
-
   navigateToPasswordRecovery(): void {
     this.router.navigate(['/password-recovery']);
   }
   
 }
-

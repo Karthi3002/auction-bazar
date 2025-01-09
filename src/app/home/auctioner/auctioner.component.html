@@ -21,10 +21,12 @@
 
   <div class="auctioneer-container">
     <div class="sidebar">
-      <img src="auction-bazar\public\auctionner.jpg" alt="Auctioneer" />
-      <h1>Welcome, Karthi</h1>
-      <p>Auctioneer | karthi16&#64;gmail.com</p>
+      <!-- Display auctioneer profile image -->
+      <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="Auctioneer Profile" />
+      <h1>{{ auctioneerUsername }}</h1>
+      <p>Auctioneer | {{ auctioneerEmail }}</p>
     </div>
+
 
     <div class="main-content" id="products">
       <h2>Your Products</h2>
@@ -33,14 +35,13 @@
       </div>
       <div class="product-grid">
         <div *ngFor="let product of filteredProducts" class="product-card">
-          <img [src]="product.image" alt="Product Image" />
-          <h4>{{ product.name }}</h4>
-          <p>Starting Price: ${{ product.price }}</p>
+          <img [src]="product.productImage" alt="Product Image" />
+          <h4>{{ product.productName }}</h4>
+          <p>Starting Price: ${{ product.minimumPrice }}</p>
           <button class="sold-button">Sold [See Winner]</button>
         </div>
       </div>
     </div>
-
     <div class="add-product" [ngClass]="{ 'slide-in': showAddProduct, 'slide-out': !showAddProduct }">
       <h3>Add New Product</h3>
       <form [formGroup]="auctionForm" (ngSubmit)="submitProduct()">
@@ -132,10 +133,10 @@
         <button type="submit" [disabled]="isSubmitDisabled">Submit Product</button>
         <button type="button" (click)="oncancel()">Cancel</button>
       </form>
-    
+
       <!-- Success Message -->
-      <div *ngIf="isProductSubmitted" class="success-message">
-        ✅ Product submitted successfully!
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
       </div>    
     </div>    
   </div>

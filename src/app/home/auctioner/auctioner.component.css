@@ -119,25 +119,27 @@ body.main-background {
 }
 
 
-.sidebar .profile {
+.sidebar  {
   text-align: center;
 }
 
-.sidebar .profile img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  margin-bottom: 10px;
+/* Sidebar Profile Image */
+.sidebar img {
+  width: 100px; /* Reduce the width */
+  height: 100px; /* Reduce the height */
+  border-radius: 50%; /* Keep it round */
+  border: 2px solid rgba(255, 255, 255, 0.5); /* Optional: Adjust border */
+  margin-bottom: 10px; /* Adjust bottom margin if necessary */
 }
 
-.sidebar .profile h3 {
+
+.sidebar  h3 {
   margin: 10px 0;
   color: #ffffff;
 }
 
-.sidebar .profile p {
-  font-size: 0.9rem;
+.sidebar  p {
+  font-size: 1.0rem;
   color: #00ffcc;
 }
 

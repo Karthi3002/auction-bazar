@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // Import Router
+import { Router } from '@angular/router';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
-import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import { AuthService } from '../../../auth.service'; // Import the AuthService
 
 @Component({
   selector: 'app-registration',
@@ -12,58 +12,80 @@ import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css'],
 })
-export class RegistrationComponent {
+export class RegistrationComponent implements OnInit {
   registrationForm: FormGroup;
-  selectedProfileImage: File | null = null;
+  selectedProfileImage: string | null = null;
+  isSubmitDisabled: boolean = true;
 
-  constructor(private fb: FormBuilder, private router: Router, private firestore: Firestore, private storage: Storage) {
+  constructor(private fb: FormBuilder, private router: Router, private firestore: Firestore, private authService: AuthService) {
     this.registrationForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       address: ['', Validators.required],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]], // Phone number field
       role: ['', Validators.required],
     });
   }
 
-  // Handle profile image file selection
-  onFileSelected(event: any): void {
-    this.selectedProfileImage = event.target.files[0];
+  ngOnInit(): void {
+    this.checkAuthentication();
   }
 
+  // Check if the user is authenticated using AuthService (you can add logic if needed)
+  checkAuthentication() {
+    const email = this.authService.getUserEmail(); // Get email from AuthService if implemented
+    if (email) {
+      this.router.navigate(['/dashboard']); // Navigate to dashboard if already authenticated
+    }
+  }
+
+  // Handle profile image selection
+  onSelectProfileImage(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.selectedProfileImage = e.target.result;
+        this.checkFormValidity();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Encrypt image using Base64 encoding
+  encryptImage(image: string): string {
+    return btoa(image); // Base64 encoding for the image
+  }
+
+  // Decrypt image using Base64 decoding
+  decryptImage(encryptedImage: string): string {
+    return atob(encryptedImage); // Base64 decoding to get the original image string
+  }
+
+  // Handle form submission and store user data in Firestore
   async onSubmit(): Promise<void> {
     if (this.registrationForm.valid && this.selectedProfileImage) {
-      console.log('Form is valid:', this.registrationForm.value);
-  
-      const { username, email, password, address, role } = this.registrationForm.value;
-  
+      const { username, email, password, address, phoneNumber, role } = this.registrationForm.value;
+      const encryptedImage = this.encryptImage(this.selectedProfileImage); // Encrypt profile image
+
       try {
-        // Upload Profile Image to Firebase Storage
-        console.log('Uploading profile image...');
-        const imageRef = ref(
-          this.storage,
-          `profileImages/${Date.now()}_${this.selectedProfileImage.name}`
-        );
-        const uploadResult = await uploadBytes(imageRef, this.selectedProfileImage);
-        const imageUrl = await getDownloadURL(uploadResult.ref);
-        console.log('Profile image uploaded:', imageUrl);
-  
         // Determine the correct collection based on the role
         const collectionName = role === 'Auctioner' ? 'auctioneers' : 'bidders';
-  
+
         // Create the document in Firestore for the correct collection
-        console.log('Saving user data to Firestore...');
         const userDocRef = doc(this.firestore, `${collectionName}/${email}`);
         await setDoc(userDocRef, {
           username,
           email,
           password,
           address,
+          phoneNumber, // Storing phone number
           role,
-          profileImage: imageUrl,
+          profileImage: encryptedImage, // Store encrypted profile image
         });
         console.log('User data saved to Firestore successfully.');
-  
+
         alert('Registration successful!');
         this.router.navigate(['/login']);
       } catch (error) {
@@ -71,12 +93,16 @@ export class RegistrationComponent {
         alert('An error occurred during registration. Please try again.');
       }
     } else {
-      console.log('Form is invalid or no profile image selected');
-      alert('Please fill all fields and select a profile image.');
+      console.log('Form is invalid');
+      alert('Please fill all fields correctly.');
     }
   }
-  
-  
+
+  // Check form validity and enable/disable the submit button
+  checkFormValidity(): void {
+    this.isSubmitDisabled = !this.registrationForm.valid || !this.selectedProfileImage;
+  }
+
   navigateToLogin(): void {
     this.router.navigate(['/login']); // Navigate to Login page
   }

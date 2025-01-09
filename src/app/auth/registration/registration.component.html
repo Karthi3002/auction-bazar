@@ -16,7 +16,6 @@
         Username must be at least 3 characters long.
       </div>
     </div>
-
     <!-- Email -->
     <div>
       <label for="email">Email</label>
@@ -33,7 +32,6 @@
         Please provide a valid email address.
       </div>
     </div>
-
     <!-- Password -->
     <div>
       <label for="password">Password</label>
@@ -50,7 +48,6 @@
         Password must be at least 6 characters long.
       </div>
     </div>
-
     <!-- Address -->
     <div>
       <label for="address">Address</label>
@@ -67,6 +64,41 @@
       </div>
     </div>
 
+    <!-- Profile Image -->
+<div>
+  <label for="profileImage">Profile Image</label>
+  <div class="input-icon">
+    <i class="fas fa-image"></i>
+    <input
+      id="profileImage"
+      type="file"
+      formControlName="profileImage"
+      (change)="onSelectProfileImage($event)"
+    />
+  </div>
+  <div *ngIf="registrationForm.get('profileImage')?.invalid && registrationForm.get('profileImage')?.touched" class="error">
+    Profile image is required.
+  </div>
+</div>
+
+<!-- Phone Number -->
+<div>
+  <label for="phoneNumber">Phone Number</label>
+  <div class="input-icon">
+    <i class="fas fa-phone"></i>
+    <input
+      id="phoneNumber"
+      type="text"
+      formControlName="phoneNumber"
+      placeholder="Enter your phone number"
+    />
+  </div>
+  <div *ngIf="registrationForm.get('phoneNumber')?.invalid && registrationForm.get('phoneNumber')?.touched" class="error">
+    Phone number is required.
+  </div>
+</div>
+
+
     <!-- Role -->
     <div>
       <label for="role">Role</label>
@@ -79,23 +111,9 @@
       </div>
     </div>
 
-  <!-- Profile Image -->
-  <div>
-    <label for="profileImage">Profile Image</label>
-    <input
-      id="profileImage"
-      type="file"
-      (change)="onFileSelected($event)"
-      accept="image/*"
-      required
-    />
-  </div>
-  <div *ngIf="registrationForm.get('profileImage')?.touched && !selectedProfileImage" class="error">
-    Please select a profile image.
-  </div>
+
     <!-- Register Button -->
     <button type="submit" [disabled]="!registrationForm.valid">Register</button>
-
     <!-- Link to Login Page -->
     <p>
       Already have an account? <a (click)="navigateToLogin()">Login here</a>
