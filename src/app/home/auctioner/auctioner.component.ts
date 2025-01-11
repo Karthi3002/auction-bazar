@@ -24,6 +24,7 @@ export class AuctioneerComponent implements OnInit {
   successMessage: string = '';  // New variable for success message
   filteredProducts = [...this.products];
   profileImageUrl: string | null = null; 
+  selectedProduct: any = null; 
 
   @ViewChild('products') productsSection!: ElementRef;
   isProductSubmitted: boolean | undefined;
@@ -33,9 +34,13 @@ export class AuctioneerComponent implements OnInit {
       productName: ['', Validators.required],
       minimumPrice: ['', [Validators.required, Validators.min(1)]],
       productCategory: ['', Validators.required],
+      quantity: ['', [Validators.required, Validators.min(1)]],
+      condition: ['', Validators.required],
+      warranty: [''],
+      description: [''],
       sessionDate: ['', Validators.required],
       sessionTime: ['', Validators.required],
-    });
+    });    
   }
 
   ngOnInit(): void {
@@ -105,15 +110,10 @@ async loadAuctioneerProfile() {
     return atob(encryptedImage); // Base64 decoding to get original image string
   }
 
-  filterProducts(category: string): void {
-    if (category === 'all') {
-      this.filteredProducts = [...this.products]; // Show all products
-    } else {
-      this.filteredProducts = this.products.filter(product =>
-        product.productCategory === category // Filter by selected category
-      );
-    }
-  }
+  // Filter products based on category
+filterCategory(category: string): void {
+  this.filteredProducts = this.products.filter(product => product.productCategory === category);
+}
 
 
   searchProducts(event: Event): void {
@@ -142,7 +142,7 @@ async loadAuctioneerProfile() {
   // Handle form submission and store the product
   async submitProduct(): Promise<void> {
     if (this.auctionForm.valid && this.selectedImage) {
-      const { productName, minimumPrice, productCategory, sessionDate, sessionTime } = this.auctionForm.value;
+      const { productName, minimumPrice, productCategory, quantity, condition, warranty, description, sessionDate, sessionTime } = this.auctionForm.value;
       const encryptedImage = this.encryptImage(this.selectedImage);
 
       // Store product in Firestore
@@ -151,6 +151,10 @@ async loadAuctioneerProfile() {
           productName,
           minimumPrice,
           productCategory,
+          quantity,
+          condition,
+          warranty,
+          description,
           sessionDate,
           sessionTime,
           productImage: encryptedImage, // Store encrypted image
@@ -189,6 +193,15 @@ async loadAuctioneerProfile() {
       }
     }
   }
+
+  viewProductDetails(product: any): void {
+    this.selectedProduct = product; // Set the selected product for display
+  }
+  
+  closeProductDetails(): void {
+    this.selectedProduct = null; // Clear the selected product to hide the modal
+  }
+  
 
   // Check form validity and enable/disable the button
   checkFormValidity(): void {
