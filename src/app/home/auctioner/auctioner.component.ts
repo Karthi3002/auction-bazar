@@ -111,10 +111,18 @@ async loadAuctioneerProfile() {
   }
 
   // Filter products based on category
-filterCategory(category: string): void {
-  this.filteredProducts = this.products.filter(product => product.productCategory === category);
-}
-
+  filterCategory(category: string): void {
+    if (category === 'all') {
+      // Display all products
+      this.filteredProducts = [...this.products]; // Clone the original product list
+    } else {
+      // Filter products by category
+      this.filteredProducts = this.products.filter(
+        (product) => product.productCategory === category
+      );
+    }
+  }
+  
 
   searchProducts(event: Event): void {
     const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();

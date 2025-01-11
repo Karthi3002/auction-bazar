@@ -70,6 +70,7 @@ body.main-background {
   z-index: 100; /* Increased z-index */
   border-radius: 8px; /* Rounded corners for better aesthetics */
   overflow: scroll; /* Ensure visibility */
+  scrollbar-width:thin; /* Hide scrollbar */
 }
 
 .dropdown-menu .dropdown-item {
@@ -195,7 +196,8 @@ body.main-background {
   gap: 20px;
   margin-top: 20px;
   max-height: 500px; /* Fixed height for the "Your Products" section */
-  overflow-y: auto; /* Enable scrolling for the products */
+  overflow-y: auto;
+  scrollbar-width: none; /* Enable scrolling for the products */
   animation: fadeIn 0.5s ease-in-out; /* Animation for products */
 }
 
@@ -265,6 +267,7 @@ body.main-background {
   max-height: 80%; /* Allow the form to be scrollable */
   overflow-y: auto; /* Enable vertical scrolling if content overflows */
   opacity: 0; /* Initially hidden */
+  scrollbar-width:none;
 }
 
 /* Slide-in Effect */
@@ -500,3 +503,4 @@ body.main-background {
 .close-button:hover {
   background-color: #d32f2f; /* Darker red on hover */
 }
+
