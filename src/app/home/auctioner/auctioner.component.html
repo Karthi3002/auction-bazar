@@ -32,6 +32,15 @@
 
     <div class="main-content" id="products">
       <h2>Your Products</h2>
+      <div class="filter-bar">
+        <label for="productFilter">Filter:</label>
+        <select id="productFilter" (change)="filterProductsByStatus($event)">
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="sold-out">Sold Out</option>
+        </select>
+      </div>
       <div class="search-bar">
         <input type="text" placeholder="Search Products..." (input)="searchProducts($event)" />
       </div>
@@ -40,8 +49,10 @@
           <img [src]="product.productImage" alt="Product Image" />
           <h4>{{ product.productName }}</h4>
           <p>Starting Price: ${{ product.minimumPrice }}</p>
-          <button class="sold-button">Sold [See Winner]</button>
-        </div>        
+          <button class="status-button">
+            {{ getProductStatus(product) }}
+          </button>
+        </div>
       </div>
       <div class="product-details-modal" *ngIf="selectedProduct">
         <div class="modal-content">
@@ -49,16 +60,17 @@
           <h2>{{ selectedProduct.productName }}</h2>
           <img [src]="selectedProduct.productImage" alt="Product Image" />
           <p><strong>Category:</strong> {{ selectedProduct.productCategory }}</p>
-          <p><strong>Starting Price:</strong> ${{ selectedProduct.minimumPrice }}</p>
+          <p><strong>Starting Price:</strong> {{ selectedProduct.minimumPrice }}</p>
           <p><strong>Quantity:</strong> {{ selectedProduct.quantity }}</p>
           <p><strong>Condition:</strong> {{ selectedProduct.condition }}</p>
           <p><strong>Warranty:</strong> {{ selectedProduct.warranty || 'N/A' }}</p>
           <p><strong>Description:</strong> {{ selectedProduct.description }}</p>
           <p><strong>Auction Date:</strong> {{ selectedProduct.sessionDate }}</p>
-          <p><strong>Auction Time:</strong> {{ selectedProduct.sessionTime }}</p>
+          <p><strong>Auction Time:</strong> {{ formatTime(selectedProduct.sessionTime) }}</p>
+          <p><strong>Auction End Date:</strong> {{ selectedProduct.endDate }}</p>
+          <p><strong>Auction End Time:</strong> {{ formatTime(selectedProduct.endTime) }}</p>
         </div>
-      </div>
-      
+      </div>      
     </div>
 
     <div class="add-product" [ngClass]="{ 'slide-in': showAddProduct, 'slide-out': !showAddProduct }">
@@ -135,6 +147,50 @@
           formControlName="warranty" 
           type="text" 
         />
+
+        <label for="sessionDate">Auction Date:</label>
+        <input 
+          id="sessionDate" 
+          formControlName="sessionDate" 
+          type="date" 
+          required 
+        />
+        <div *ngIf="auctionForm.get('sessionDate')?.touched && auctionForm.get('sessionDate')?.invalid" class="error-message">
+          Auction Date is required.
+        </div>
+    
+        <label for="sessionTime">Auction Time:</label>
+        <input 
+          id="sessionTime" 
+          formControlName="sessionTime" 
+          type="time" 
+          required 
+        />
+        <div *ngIf="auctionForm.get('sessionTime')?.touched && auctionForm.get('sessionTime')?.invalid" class="error-message">
+          Auction Time is required.
+        </div>
+
+        <label for="endDate">Auction End Date:</label>
+        <input 
+          id="endDate" 
+          formControlName="endDate" 
+          type="date" 
+          required 
+        />
+        <div *ngIf="auctionForm.get('endDate')?.touched && auctionForm.get('endDate')?.invalid" class="error-message">
+          Auction End Date is required.
+        </div>
+    
+        <label for="endTime">Auction End Time:</label>
+        <input 
+          id="endTime" 
+          formControlName="endTime" 
+          type="time" 
+          required 
+        />
+        <div *ngIf="auctionForm.get('endTime')?.touched && auctionForm.get('endTime')?.invalid" class="error-message">
+          Auction End Time is required.
+        </div>
     
         <label for="description">Product Description:</label>
         <textarea 

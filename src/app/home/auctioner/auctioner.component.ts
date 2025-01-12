@@ -40,6 +40,8 @@ export class AuctioneerComponent implements OnInit {
       description: [''],
       sessionDate: ['', Validators.required],
       sessionTime: ['', Validators.required],
+      endDate: ['', Validators.required],
+      endTime: ['', Validators.required],
     });    
   }
 
@@ -47,6 +49,73 @@ export class AuctioneerComponent implements OnInit {
     this.checkAuthentication();
     this.loadProducts();
   }
+  
+  formatTime(time: string): string {
+    const [hours, minutes] = time.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12; // Convert 24-hour format to 12-hour format
+    return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+  }
+
+  getProductStatus(product: any): string {
+    const currentDate = new Date();
+    const productStartDate = new Date(product.sessionDate + 'T' + product.sessionTime);
+    const productEndDate = new Date(product.sessionDate + 'T' + product.endTime);
+    
+    // Case 1: If the current time is between the product's session start and end time (Active status)
+    if (currentDate >= productStartDate && currentDate <= productEndDate) {
+      const remainingTime = Math.ceil((productEndDate.getTime() - currentDate.getTime()) / (1000 * 60)); // in minutes
+      if (remainingTime > 60) {
+        return 'Active'; // Auction is active
+      } else if (remainingTime <= 60 && remainingTime > 30) {
+        return 'Less than 1 hour to go'; // Less than 1 hour to go
+      } else if (remainingTime <= 30) {
+        return `${remainingTime} minutes to go`; // Less than 30 minutes
+      }
+    }
+    
+    // Case 2: If the current time is after the product's end time (Sold)
+    if (currentDate > productEndDate) {
+      return 'Sold'; // Auction is closed, product is sold
+    }
+    
+    // Case 3: If the current time is before the product's session start time (Upcoming or Time Remaining)
+    if (currentDate < productStartDate) {
+      const diffInTime = productStartDate.getTime() - currentDate.getTime();
+      const diffInMinutes = Math.floor(diffInTime / (1000 * 60)); // Difference in minutes
+      
+      if (diffInMinutes <= 60) {
+        return `Time remaining: ${diffInMinutes} minutes`; // Less than 1 hour to go
+      } else if (diffInMinutes <= 1440) {
+        return `Time remaining: ${Math.floor(diffInMinutes / 60)} hours`; // Less than 24 hours
+      } else {
+        const diffInDays = Math.floor(diffInTime / (1000 * 3600 * 24)); // Difference in days
+        return `In ${diffInDays} days`; // Future Auction in N days
+      }
+    }
+    
+    return 'Not Started'; // Default case (just in case)
+  }
+  
+  filterProductsByStatus(event: Event): void {
+    const filterValue = (event.target as HTMLSelectElement).value;
+    const currentDate = new Date();
+  
+    this.filteredProducts = this.products.filter(product => {
+      const startDate = new Date(product.sessionDate + 'T' + product.sessionTime);
+      const endDate = new Date(product.endDate + 'T' + product.endTime);
+  
+      if (filterValue === 'active') {
+        return currentDate >= startDate && currentDate <= endDate;
+      } else if (filterValue === 'upcoming') {
+        return currentDate < startDate;
+      } else if (filterValue === 'sold-out') {
+        return currentDate > endDate;
+      }
+      return true; // Show all for 'all'
+    });
+  }
+  
 
   // Check if the auctioneer is authenticated using AuthService
   async checkAuthentication() {
@@ -150,7 +219,7 @@ async loadAuctioneerProfile() {
   // Handle form submission and store the product
   async submitProduct(): Promise<void> {
     if (this.auctionForm.valid && this.selectedImage) {
-      const { productName, minimumPrice, productCategory, quantity, condition, warranty, description, sessionDate, sessionTime } = this.auctionForm.value;
+      const { productName, minimumPrice, productCategory, quantity, condition, warranty, description, sessionDate, sessionTime, endDate, endTime } = this.auctionForm.value;
       const encryptedImage = this.encryptImage(this.selectedImage);
 
       // Store product in Firestore
@@ -165,6 +234,8 @@ async loadAuctioneerProfile() {
           description,
           sessionDate,
           sessionTime,
+          endDate,
+          endTime,
           productImage: encryptedImage, // Store encrypted image
         });
 

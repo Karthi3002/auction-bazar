@@ -176,6 +176,68 @@ body.main-background {
   overflow: visible;
 }
 
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.filter-bar label {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.filter-bar select {
+  width: 180px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px; /* Rounded corners for consistency */
+  font-size: 14px;
+  color: black;
+  background: rgba(255, 255, 255, 0.1); /* Matches dropdown background */
+  backdrop-filter: blur(10px); /* Blur effect */
+  -webkit-backdrop-filter: blur(10px); /* WebKit compatibility */
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.filter-bar select:focus {
+  outline: none;
+  border-color: rgba(0, 255, 204, 0.7); /* Highlight on focus */
+  box-shadow: 0 0 4px rgba(0, 255, 204, 0.7);
+  background: rgba(255, 255, 255, 0.15); /* Slightly lighter on focus */
+}
+
+.filter-bar select option {
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  color: black;
+  background: rgba(255, 255, 255, 0.1); /* Matches dropdown menu background */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.filter-bar select option:hover {
+  background: rgba(255, 255, 255, 0.2); /* Hover effect matches dropdown-item hover */
+  color: #00ffcc; /* Same highlight color */
+  border-radius: 5px;
+}
+
+.filter-bar select option:disabled {
+  color: #999;
+  background: rgba(255, 255, 255, 0.05); /* Subtle disabled effect */
+  cursor: not-allowed;
+}
+
+
 .search-bar input {
   width: 100%;
   padding: 10px;
@@ -385,6 +447,7 @@ body.main-background {
 .add-product button {
   width: 100%;
   padding: 12px;
+  margin-top: 10px;
   font-size: 16px;
   font-weight: bold;
   color: #fff;
@@ -420,18 +483,64 @@ body.main-background {
 }
 
 /* Product Details Modal */
+/* Modal container styling */
 .product-details-modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: fixed;
-  top: 0;
-  left: 0;
-  padding-top: 70px;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+  top: 61%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  padding: 20px;
   z-index: 1000;
+}
+
+/* Modal close button */
+.product-details-modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Product image */
+.product-details-modal img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* Modal content layout */
+.product-details-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.product-details-modal .modal-content h2 {
+  font-size: 1.5em;
+  margin: 0;
+}
+
+.product-details-modal .modal-content p {
+  margin: 5px 0;
+}
+
+/* For mobile responsiveness */
+@media (max-width: 600px) {
+  .product-details-modal {
+    width: 90%;
+    padding: 15px;
+  }
 }
 
 /* Glassmorphism Effect for Modal Content */
@@ -448,57 +557,9 @@ body.main-background {
   max-height: 80vh;
   overflow-y: auto; /* Scrollable for large content */
   text-align: left;
+  scrollbar-width: none;
 }
 
-@media (max-width: 768px) {
-  .product-details-modal {
-    width: 95%;
-    max-width: 90%;
-    padding: 15px;
-  }
-}
-
-/* Adjusting text for visibility on glass background */
-.modal-content h2 {
-  font-size: 24px;
-  margin-bottom: 15px;
-  color: #fff; /* White text for better contrast */
-}
-
-.modal-content p {
-  font-size: 16px;
-  margin-bottom: 10px;
-  color: #ddd; /* Light text for better visibility */
-}
-
-.modal-content strong {
-  color: #fff; /* Emphasized text matches the frosted theme */
-}
-
-.modal-content img {
-  margin: 0 auto; /* Center the image */
-  width: 50%;
-  height: auto;
-  border-radius: 10px;
-  
-  border: 2px solid rgba(255, 255, 255, 0.4); /* Border to match glass style */
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #f44336; /* Red close button */
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  text-align: center;
-  font-size: 18px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
 
 .close-button:hover {
   background-color: #d32f2f; /* Darker red on hover */
