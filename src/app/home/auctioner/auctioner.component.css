@@ -565,3 +565,83 @@ body.main-background {
   background-color: #d32f2f; /* Darker red on hover */
 }
 
+
+
+/* Mobile View Styles */
+@media only screen and (max-width: 750px) {
+  /* General Body Styles */
+  body.main-background {
+    padding-right: 10px;
+    font-size: 0.9rem;
+  }
+
+  /* Navbar */
+  .navbar {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .navbar-brand h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .navbar-menu {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Auctioneer Container */
+  .auctioneer-container {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 90%;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .sidebar img {
+    width: 80px;
+    height: 80px;
+  }
+
+  /* Main Content */
+  .main-content {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .main-content h2 {
+    font-size: 1.2rem;
+  }
+
+  /* Filter Bar */
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  /* Product Grid */
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .product-card img {
+    max-width: 60%;
+    height: auto;
+  }
+
+  /* Add Product Section */
+  .add-product {
+    width: 90%;
+    max-width: none;
+    padding: 15px;
+  }
+}

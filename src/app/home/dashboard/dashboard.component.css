@@ -1,135 +1,225 @@
-/* General Layout */
-.dashboard-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Section Header */
-.section-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.section-header h2 {
-  font-size: 2.5rem;
-  color: #333;
-  font-weight: 600;
-}
-
-/* Section Styles */
-.section {
-  margin-bottom: 40px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.section h3 {
-  font-size: 1.75rem;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.details, .auction-details {
+/* General Body Styling */
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(150deg, #6A11CB , #8C0B8E, #7B0EAC);
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  top: 0;
+  left: 0;
   display: flex;
-  justify-content: space-between;
+  position: absolute;
+  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
 }
 
-/* Auctioneer Details Section */
-.auctioneer-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.details img {
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  margin-right: 20px;
-}
-
-.details-info {
-  flex-grow: 1;
-}
-
-.details-info p {
-  font-size: 1rem;
-  color: #555;
-  margin: 10px 0;
-}
-
-.hidden {
-  display: none;
-}
-
-button {
-  background-color: #3498db;
+/* Dashboard Container Styling */
+.dashboard-container {
+  width: 90%;
+  max-width: 1200px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   color: #fff;
-  border: none;
-  padding: 5px 15px;
+}
+
+/* Section Headers */
+.section-header h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Section Styling */
+.section {
+  margin-bottom: 30px;
+  padding: 20px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section:hover {
+  transform: scale(1.05); /* Slightly enlarge the section */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Add a deeper shadow effect */
+}
+
+/* Optional Glow Effect */
+.section:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  z-index: -1;
+}
+
+/* Headings Styling */
+h3, h4 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #ffdfba;
+  text-transform: capitalize;
+}
+
+/* Paragraph Styling */
+p {
+  margin: 8px 0;
   font-size: 1rem;
+  line-height: 1.5;
+  color: #fff;
+}
+
+/* Image Styling */
+img {
+  width: 100px; /* Reduce the width */
+  height: 100px; /* Reduce the height */
+  border-radius: 50%; /* Keep it round */
+  border: 2px solid rgba(255, 255, 255, 0.5); /* Optional: Adjust border */
+  margin-bottom: 10px;
+  transition: transform 0.3s ease-in-out;
+}
+
+img:hover {
+  transform: scale(1.05);
+}
+
+/* Buttons Styling */
+button {
+  padding: 7px 13px;
+  font-size: 1rem;
+  color: #fff;
+  background: linear-gradient(135deg, #ff758c, #6a11cb);
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 button:hover {
-  background-color: #2980b9;
+  background: linear-gradient(135deg, #ff7eb3, #2575fc);
+  transform: scale(1.05);
 }
 
-/* Auctioneer Product Details Section */
-.auctioneer-products {
-  background-color: #f7f7f7;
-}
-
-.auction-details p {
+/* Inputs Styling */
+input[type="text"], input[type="password"], select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
   font-size: 1rem;
-  color: #333;
-  margin-bottom: 10px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  outline: none;
+  transition: box-shadow 0.3s ease;
 }
 
-/* Auction Progress Status Section */
-.auction-status {
-  background-color: #e7f0f7;
-  padding: 20px;
-  border-radius: 8px;
+input:focus, select:focus {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
+/* Progress Bar Styling */
 .progress-container {
-  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  padding: 10px;
 }
 
 .progress-bar {
-  height: 25px;
-  background-color: #3498db;
-  border-radius: 4px;
+  height: 20px;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  border-radius: 5px;
+  animation: progressAnimation 2s ease-in-out;
 }
 
-.auction-status table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+@keyframes progressAnimation {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
 }
 
-.auction-status th, .auction-status td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  font-size: 1rem;
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+  .dashboard-container {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+  }
+
+  .section {
+    padding: 15px;
+  }
+
+  h3, h4 {
+    font-size: 1.5rem;
+  }
+
+  img {
+    width: 80px;
+    height: 80px;
+  }
+
+  button {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+
+  input[type="text"], input[type="password"], select {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  table th, table td {
+    font-size: 0.9rem;
+  }
 }
 
-.auction-status th {
-  background-color: #3498db;
-  color: #fff;
-}
+@media (max-width: 480px) {
+  .section-header h2 {
+    font-size: 1.8rem;
+  }
 
-.auction-status tr:hover {
-  background-color: #f1f1f1;
+  h3, h4 {
+    font-size: 1.2rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+
+  img {
+    width: 70px;
+    height: 70px;
+  }
+
+  button {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+
+  input[type="text"], input[type="password"], select {
+    padding: 6px;
+    font-size: 0.8rem;
+  }
 }
