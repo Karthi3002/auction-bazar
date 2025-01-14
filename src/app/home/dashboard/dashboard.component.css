@@ -1,171 +1,135 @@
 /* General Layout */
 .dashboard-container {
-    margin: -8px;
-    padding: 40px;
-    background: linear-gradient(150deg, #6A11CB , #8C0B8E, #7B0EAC); /* Gradient background */
-    min-height: 100vh;
-    font-family: 'Arial', sans-serif;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.section {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.8s ease-out;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+/* Section Header */
+.section-header {
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-/* Section header */
 .section-header h2 {
-    font-size: 2.2em;
-    color: #FFDDC1;
-    margin-bottom: 20px;
-    text-align: center;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  font-size: 2.5rem;
+  color: #333;
+  font-weight: 600;
 }
 
-/* Profile Section */
-.personal-details .profile-info {
-    text-align: center;
+/* Section Styles */
+.section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.profile-img {
-    width: 120px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    border: 2px solid white;
+.section h3 {
+  font-size: 1.75rem;
+  color: #333;
+  margin-bottom: 20px;
 }
 
-.profile-info h3 {
-    font-size: 1.8em;
-    color: #FFDDC1;
+.details, .auction-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.profile-info p {
-    font-size: 1.2em;
-    color: #ffffff;
+/* Auctioneer Details Section */
+.auctioneer-details {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Password Field */
-.password-info p {
-    font-size: 1.2em;
-    color: #ffffff;
-    margin-top: 10px;
-    font-style: italic;
+.details img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
 }
 
-/* Auction Stats Section */
-.auction-details .auction-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.details-info {
+  flex-grow: 1;
 }
 
-.stat-item {
-    font-size: 1.2em;
-    color: #ffffff;
+.details-info p {
+  font-size: 1rem;
+  color: #555;
+  margin: 10px 0;
 }
 
-.stat-item strong {
-    color: #FFDDC1;
+.hidden {
+  display: none;
 }
 
-.stat-item span {
-    font-weight: bold;
+button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 5px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-/* Additional Details with Progress Bar and Table */
-.additional-details {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.8s ease-out;
+button:hover {
+  background-color: #2980b9;
 }
 
-.additional-details h2 {
-    font-size: 2.2em;
-    color: #FFDDC1;
-    margin-bottom: 30px;
+/* Auctioneer Product Details Section */
+.auctioneer-products {
+  background-color: #f7f7f7;
 }
 
-.progress-bar-container {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px; /* Added margin for space between sections */
+.auction-details p {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Auction Progress Status Section */
+.auction-status {
+  background-color: #e7f0f7;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.progress-container {
+  margin-bottom: 20px;
 }
 
 .progress-bar {
-    height: 20px;
-    width: 100%;
-    background: #ffffff;
-    border-radius: 10px;
+  height: 25px;
+  background-color: #3498db;
+  border-radius: 4px;
 }
 
-.progress {
-    height: 100%;
-    background: #8C0B8E;
-    border-radius: 10px;
+.auction-status table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
 }
 
-.table-container {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 20px;
-    border-radius: 10px;
+.auction-status th, .auction-status td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 1rem;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+.auction-status th {
+  background-color: #3498db;
+  color: #fff;
 }
 
-th, td {
-    text-align: left;
-    padding: 12px;
-    font-size: 1.1em;
+.auction-status tr:hover {
+  background-color: #f1f1f1;
 }
-
-th {
-    background: #8C0B8E;
-    color: white;
-}
-
-td {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-tr:hover {
-    background: rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-}
-
-/* Hover Effect on Each Section */
-.section:hover {
-    transform: translateY(-10px);
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-
-/* Animation for Page Load */
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-  
-  
-  

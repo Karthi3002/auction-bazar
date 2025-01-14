@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { v4 as uuidv4 } from 'uuid';
 import { Firestore, doc, setDoc, getDocs, collection, query, getDoc } from '@angular/fire/firestore';
 import { AuthService } from '../../../auth.service'; // Import the AuthService
 
@@ -25,6 +26,11 @@ export class AuctioneerComponent implements OnInit {
   filteredProducts = [...this.products];
   profileImageUrl: string | null = null; 
   selectedProduct: any = null; 
+  isDashboardVisible = false; // New variable to toggle dashboard visibility
+  totalProducts = 0;
+  activeAuctions = 0;
+  upcomingAuctions = 0;
+  soldProducts = 0;
 
   @ViewChild('products') productsSection!: ElementRef;
   isProductSubmitted: boolean | undefined;
@@ -61,41 +67,39 @@ export class AuctioneerComponent implements OnInit {
     const currentDate = new Date();
     const productStartDate = new Date(product.sessionDate + 'T' + product.sessionTime);
     const productEndDate = new Date(product.sessionDate + 'T' + product.endTime);
-    
-    // Case 1: If the current time is between the product's session start and end time (Active status)
+  
+    // Case 1: Active
     if (currentDate >= productStartDate && currentDate <= productEndDate) {
-      const remainingTime = Math.ceil((productEndDate.getTime() - currentDate.getTime()) / (1000 * 60)); // in minutes
-      if (remainingTime > 60) {
-        return 'Active'; // Auction is active
-      } else if (remainingTime <= 60 && remainingTime > 30) {
-        return 'Less than 1 hour to go'; // Less than 1 hour to go
-      } else if (remainingTime <= 30) {
-        return `${remainingTime} minutes to go`; // Less than 30 minutes
+      return 'Active';
+    }
+  
+    // Case 2: Upcoming (Same Day)
+    if (currentDate < productStartDate && currentDate.toDateString() === productStartDate.toDateString()) {
+      const remainingTime = Math.ceil((productStartDate.getTime() - currentDate.getTime()) / (1000 * 60));
+      if (remainingTime <= 60) {
+        return `Upcoming: ${remainingTime} minutes remaining`;
       }
+      return `Upcoming: In ${Math.ceil(remainingTime / 60)} hours`;
     }
-    
-    // Case 2: If the current time is after the product's end time (Sold)
-    if (currentDate > productEndDate) {
-      return 'Sold'; // Auction is closed, product is sold
-    }
-    
-    // Case 3: If the current time is before the product's session start time (Upcoming or Time Remaining)
+  
+    // Case 3: Upcoming (Future Date)
     if (currentDate < productStartDate) {
-      const diffInTime = productStartDate.getTime() - currentDate.getTime();
-      const diffInMinutes = Math.floor(diffInTime / (1000 * 60)); // Difference in minutes
-      
-      if (diffInMinutes <= 60) {
-        return `Time remaining: ${diffInMinutes} minutes`; // Less than 1 hour to go
-      } else if (diffInMinutes <= 1440) {
-        return `Time remaining: ${Math.floor(diffInMinutes / 60)} hours`; // Less than 24 hours
-      } else {
-        const diffInDays = Math.floor(diffInTime / (1000 * 3600 * 24)); // Difference in days
-        return `In ${diffInDays} days`; // Future Auction in N days
+      const isTomorrow = productStartDate.getDate() === currentDate.getDate() + 1;
+      if (isTomorrow) {
+        return 'Upcoming: Tomorrow';
       }
+      const diffInDays = Math.ceil((productStartDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+      return `Upcoming: In ${diffInDays} days`;
     }
-    
-    return 'Not Started'; // Default case (just in case)
+  
+    // Case 4: Sold
+    if (currentDate > productEndDate) {
+      return 'Sold';
+    }
+  
+    return 'Unknown Status'; // Fallback
   }
+  
   
   filterProductsByStatus(event: Event): void {
     const filterValue = (event.target as HTMLSelectElement).value;
@@ -221,10 +225,12 @@ async loadAuctioneerProfile() {
     if (this.auctionForm.valid && this.selectedImage) {
       const { productName, minimumPrice, productCategory, quantity, condition, warranty, description, sessionDate, sessionTime, endDate, endTime } = this.auctionForm.value;
       const encryptedImage = this.encryptImage(this.selectedImage);
-
+      const productId = uuidv4(); // Generate a unique ID for the product
+  
       // Store product in Firestore
       try {
-        await setDoc(doc(this.firestore, `auctioneers/${this.auctioneerEmail}/products`, productName), {
+        await setDoc(doc(this.firestore, `auctioneers/${this.auctioneerEmail}/products`, productId), {
+          productId, // Store the product ID for reference
           productName,
           minimumPrice,
           productCategory,
@@ -238,11 +244,11 @@ async loadAuctioneerProfile() {
           endTime,
           productImage: encryptedImage, // Store encrypted image
         });
-
+  
         // Show success message
         this.successMessage = 'Product added successfully!';
         setTimeout(() => this.successMessage = '', 3000); // Clear the message after 3 seconds
-
+  
         // Reset form after successful submission
         this.auctionForm.reset();
         this.selectedImage = null;
@@ -253,6 +259,7 @@ async loadAuctioneerProfile() {
       }
     }
   }
+  
 
 
   // Retrieve products from Firestore
@@ -286,9 +293,32 @@ async loadAuctioneerProfile() {
   checkFormValidity(): void {
     this.isSubmitDisabled = !this.auctionForm.valid || !this.selectedImage;
   }
+
   navigateToDashboard(): void {
     this.router.navigate(['/dashboard']);
   }
+  
+    // Function to load the dashboard stats
+    loadDashboardStats(): void {
+      this.activeAuctions = this.products.filter(product => {
+        const currentDate = new Date();
+        const startDate = new Date(product.sessionDate + 'T' + product.sessionTime);
+        const endDate = new Date(product.endDate + 'T' + product.endTime);
+        return currentDate >= startDate && currentDate <= endDate;
+      }).length;
+  
+      this.upcomingAuctions = this.products.filter(product => {
+        const currentDate = new Date();
+        const startDate = new Date(product.sessionDate + 'T' + product.sessionTime);
+        return currentDate < startDate;
+      }).length;
+  
+      this.soldProducts = this.products.filter(product => {
+        const currentDate = new Date();
+        const endDate = new Date(product.endDate + 'T' + product.endTime);
+        return currentDate > endDate;
+      }).length;
+    }
 
   oncancel(): void {
     this.auctionForm.reset();

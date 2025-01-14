@@ -1,118 +1,68 @@
+<body>
 <div class="dashboard-container">
-  <!-- Section: Auctioneer Personal Details -->
-  <div class="section personal-details">
-    <div class="section-header">
-      <h2>Auctioneer Personal Details</h2>
-    </div>
-    <div class="section-content">
-      <div class="profile-info">
-        <img
-          *ngIf="profileImageUrl; else placeholderImage"
-          [src]="profileImageUrl"
-          alt="Profile Picture"
-          class="profile-img"
-        />
-        <ng-template #placeholderImage>
-          <img src="assets/profile-placeholder.jpg" alt="Profile Picture" class="profile-img" />
-        </ng-template>
-        <h3>{{ auctioneerDetails?.username || 'Auctioneer Name' }}</h3>
-        <p>{{ auctioneerDetails?.role || 'Role not available' }}</p>
-        <p>Email: {{ auctioneerDetails?.email || 'Email not available' }}</p>
-        <p>Address: {{ auctioneerDetails?.address || 'Address not available' }}</p>
+  <div class="section-header">
+    <h2>Auctioneer Dashboard</h2>
+  </div>
 
-        <!-- Password Display -->
-        <div class="password-info">
-          <p>Password: ********</p>
-        </div>
+  <!-- Auctioneer Details Section -->
+  <div class="section auctioneer-details">
+    <h3>Auctioneer Details</h3>
+    <div class="details">
+      <img [src]="profileImageUrl" alt="Auctioneer Profile" *ngIf="profileImageUrl" class="profile-img" />
+      <div class="details-info">
+        <p><strong>Username:</strong> {{ auctioneerUsername }}</p>
+        <p><strong>Email:</strong> {{ auctioneerEmail }}</p>
+        <p><strong>Password:</strong> 
+          <span [ngClass]="{'hidden': !passwordVisible}">
+            {{ auctioneerPassword }}
+          </span>
+          <button (click)="togglePasswordVisibility()">
+            {{ passwordVisible ? 'Hide' : 'Show' }} Password
+          </button>
+        </p>
+        <p><strong>Address:</strong> {{ auctioneerAddress }}</p>
       </div>
     </div>
   </div>
 
-  <!-- Section: Auction Details -->
-  <div class="section auction-details">
-    <div class="section-header">
-      <h2>Auction Details</h2>
-    </div>
-    <div class="section-content">
-      <div class="auction-stats">
-        <div class="stat-item">
-          <strong>Total Auctions:</strong> <span>{{ totalAuctions }}</span>
-        </div>
-        <div class="stat-item">
-          <strong>Upcoming Auctions:</strong> <span>{{ upcomingAuctions }}</span>
-        </div>
-        <div class="stat-item">
-          <strong>Ongoing Auctions:</strong> <span>{{ ongoingAuctions }}</span>
-        </div>
-        <div class="stat-item">
-          <strong>Completed Auctions:</strong> <span>{{ completedAuctions }}</span>
-        </div>
-        <div class="stat-item">
-          <strong>Total Revenue:</strong> <span>${{ totalRevenue }}</span>
-        </div>
-      </div>
+  <!-- Auctioneer Product Details Section -->
+  <div class="section auctioneer-products">
+    <h3>Auction Details</h3>
+    <div class="auction-details">
+      <p><strong>Total Products:</strong> {{ totalProducts }}</p>
+      <p><strong>Active Products:</strong> {{ activeProducts }}</p>
+      <p><strong>Sold Products:</strong> {{ soldProducts }}</p>
+      <p><strong>Upcoming Products:</strong> {{ upcomingProducts }}</p>
     </div>
   </div>
 
-  <!-- Section: Additional Details -->
-  <div class="section additional-details">
-    <div class="section-header">
-      <h2>Additional Auction Details</h2>
+  <!-- Auction Progress Status Section -->
+  <div class="section auction-status">
+    <h3>Auction Progress Status</h3>
+    <div class="progress-container">
+      <div class="progress-bar" [style.width]="auctionProgress + '%'"></div>
+      <p>Progress: {{ auctionProgress }}%</p>
     </div>
-    <div class="section-content">
-      <!-- Auction Progress Bar -->
-      <div class="progress-bar-container">
-        <h3>Auction Progress</h3>
-        <div class="progress-bar">
-          <div class="progress" [ngStyle]="{ width: auctionProgress + '%' }"></div>
-        </div>
-        <p>{{ auctionProgress }}% of total auctions completed</p>
-      </div>
 
-      <!-- Auction Stats Table -->
-      <div class="table-container">
-        <h3>Auction Overview</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Auction Type</th>
-              <th>Total</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Total Auctions</td>
-              <td>{{ totalAuctions }}</td>
-              <td>Active</td>
-            </tr>
-            <tr>
-              <td>Upcoming Auctions</td>
-              <td>{{ upcomingAuctions }}</td>
-              <td>Scheduled</td>
-            </tr>
-            <tr>
-              <td>Ongoing Auctions</td>
-              <td>{{ ongoingAuctions }}</td>
-              <td>Live</td>
-            </tr>
-            <tr>
-              <td>Completed Auctions</td>
-              <td>{{ completedAuctions }}</td>
-              <td>Finished</td>
-            </tr>
-            <tr>
-              <td>Total Revenue</td>
-              <td>${{ totalRevenue }}</td>
-              <td>Accumulated</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <h4>Overall Auction Details</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Status</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of filteredProducts">
+          <td>{{ product.productName }}</td>
+          <td>{{ getProductStatus(product) }}</td>
+          <td>{{ product.sessionDate }}</td>
+          <td>{{ product.endDate }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
-
-  
-  
-  
+</body>
