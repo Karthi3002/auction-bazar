@@ -58,7 +58,7 @@ export class LoginComponent {
 
         try {
           // Determine the correct collection based on the role
-          const collectionName = role === 'Auctioner' ? 'auctioneers' : 'bidders';
+          const collectionName = role === 'Auctioner' ? 'auctioneers' : role === 'Bidder' ? 'bidders' : 'admins';
 
           // Reference the user document in Firestore
           const userDocRef = doc(this.firestore, `${collectionName}/${email}`);
@@ -78,7 +78,10 @@ export class LoginComponent {
                 this.router.navigate(['/auctioner']);
               } else if (role === 'Bidder') {
                 this.router.navigate(['/bidder']);
+              } else if (role === 'Admin') {
+                this.router.navigate(['/admin']);
               }
+
             } else {
               alert('Invalid password. Please try again.');
             }

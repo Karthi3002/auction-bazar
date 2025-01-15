@@ -71,7 +71,7 @@ export class RegistrationComponent implements OnInit {
 
       try {
         // Determine the correct collection based on the role
-        const collectionName = role === 'Auctioner' ? 'auctioneers' : 'bidders';
+        const collectionName = role === 'Auctioner' ? 'auctioneers' : (role === 'Bidder' ? 'bidders' : 'admins');
 
         // Create the document in Firestore for the correct collection
         const userDocRef = doc(this.firestore, `${collectionName}/${email}`);
