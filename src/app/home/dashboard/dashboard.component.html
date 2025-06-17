@@ -1,4 +1,6 @@
 <body>
+        <!-- 🔄 Global Loading Bar -->
+  <div *ngIf="isLoading" class="loading-bar"></div>
 <div class="dashboard-container">
   <div class="section-header">
     <h2>Auctioneer Dashboard</h2>
@@ -13,31 +15,43 @@
         <p><strong>Username:</strong> {{ auctioneerUsername }}</p>
         <p><strong>Email:</strong> {{ auctioneerEmail }}</p>
         <p><strong>Password:</strong> 
-          <span [ngClass]="{'hidden': !passwordVisible}">
-            {{ auctioneerPassword }}
-          </span>
+          <span *ngIf="passwordVisible">{{ auctioneerPassword }}</span>
+          <span *ngIf="!passwordVisible">********</span>
           <button (click)="togglePasswordVisibility()">
             {{ passwordVisible ? 'Hide' : 'Show' }} Password
           </button>
-        </p>
+        </p>        
         <p><strong>Address:</strong> {{ auctioneerAddress }}</p>
       </div>
     </div>
   </div>
 
-  <!-- Auctioneer Product Details Section -->
-  <div class="section auctioneer-products">
-    <h3>Auction Details</h3>
-    <div class="auction-details">
-      <p><strong>Total Products:</strong> {{ totalProducts }}</p>
-      <p><strong>Active Products:</strong> {{ activeProducts }}</p>
-      <p><strong>Sold Products:</strong> {{ soldProducts }}</p>
-      <p><strong>Upcoming Products:</strong> {{ upcomingProducts }}</p>
+<!-- Auctioneer Product Details Section -->
+<div class="section auctioneer-details">
+  <h3>Auction Summary</h3>
+  <div class="auction-info-grid">
+    <div class="stat-box">
+      <p>Total Products</p>
+      <span>{{ totalProducts }}</span>
+    </div>
+    <div class="stat-box">
+      <p>Active Products</p>
+      <span>{{ activeProducts }}</span>
+    </div>
+    <div class="stat-box">
+      <p>Sold Products</p>
+      <span>{{ soldProducts }}</span>
+    </div>
+    <div class="stat-box">
+      <p>Upcoming Products</p>
+      <span>{{ upcomingProducts }}</span>
     </div>
   </div>
+</div>
+
 
   <!-- Auction Progress Status Section -->
-  <div class="section auction-status">
+  <div class="section auctioneer-details">
     <h3>Auction Progress Status</h3>
     <div class="progress-container">
       <div class="progress-bar" [style.width]="auctionProgress + '%'"></div>
@@ -45,24 +59,62 @@
     </div>
 
     <h4>Overall Auction Details</h4>
-    <table>
-      <thead>
-        <tr>
-          <th>Product Name</th>
-          <th>Status</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let product of filteredProducts">
-          <td>{{ product.productName }}</td>
-          <td>{{ getProductStatus(product) }}</td>
-          <td>{{ product.sessionDate }}</td>
-          <td>{{ product.endDate }}</td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="table-scroll-wrapper">
+<table>
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Image</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Starting Price (₹)</th>
+      <th>Bidded Price (₹)</th>
+      <th>Profit (%)</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of filteredProducts">
+      <td data-label="Product">
+        <div>{{ product.productName }}</div>
+      </td>
+      <td data-label="Image">
+        <img [src]="product.productImage" alt="Product" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
+      </td>
+      <td data-label="Start">
+        {{ product.sessionDate }} <br />
+        {{ product.sessionTime }}
+      </td>
+      <td data-label="End">
+        {{ product.endDate }} <br />
+        {{ product.endTime }}
+      </td>
+      <td data-label="Starting Price">
+        ₹{{ product.minimumPrice }}
+      </td>
+      <td data-label="Bidded Price">
+        ₹{{ product.currentHighestBid || '-' }}<br />
+        <small *ngIf="product.currentHighestBidderName">By: {{ product.currentHighestBidderName }}</small>
+      </td>
+      <td data-label="Profit">
+        {{ calculateProfit(product.minimumPrice, product.currentHighestBid) }}%
+      </td>
+      <td data-label="Status">
+        {{ getProductStatus(product) }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
   </div>
+    <!-- Scroll Buttons -->
+  <div class="scroll-buttons">
+    <button class="scroll-left" (click)="scrollTable('left')">←</button>
+    <button class="scroll-right" (click)="scrollTable('right')">→</button>
+  </div>
+  </div>
+  <div class="back-button-wrapper">
+    <button class="back-button" (click)="goBack()">← Back</button>
+  </div>  
 </div>
 </body>

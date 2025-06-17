@@ -1,70 +1,49 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private userEmail: string = '';
-  private userId: string = '';  // Store user ID for fetching related auction data
-  getCurrentUserEmail: any;
-  firestore: any;
-  storage: any;
+  // Store UID
+  setUserId(uid: string): void {
+    sessionStorage.setItem('userUID', uid);
+  }
 
-  // Set user email
+  getUserId(): string | null {
+    return sessionStorage.getItem('userUID');
+  }
+
+  // Store Email
   setUserEmail(email: string): void {
-    this.userEmail = email;
+    sessionStorage.setItem('userEmail', email);
   }
 
-  // Get user email
-  getUserEmail(): string {
-    return this.userEmail;
+  getUserEmail(): string | null {
+    return sessionStorage.getItem('userEmail');
   }
 
-  // Clear user email
-  clearUserEmail(): void {
-    this.userEmail = '';
+  // Store Role
+  setUserRole(role: string): void {
+    sessionStorage.setItem('userRole', role);
   }
 
-  // Check if the user is authenticated
+  getUserRole(): string | null {
+    return sessionStorage.getItem('userRole');
+  }
+
+  // Clear session (on logout)
+  clearUserData(): void {
+    sessionStorage.removeItem('userUID');
+    sessionStorage.removeItem('userEmail');
+    sessionStorage.removeItem('userRole');
+  }
+
   isAuthenticated(): boolean {
-    return this.userEmail !== '';
+    return !!this.getUserId() && !!this.getUserEmail();
   }
 
-  // Set user ID (e.g., fetched after login)
-  setUserId(userId: string): void {
-    this.userId = userId;
-  }
+  logout(): void {
+  sessionStorage.clear();  // ✅ clear tab-specific session data
+}
 
-  // Get user ID
-  getUserId(): string {
-    return this.userId;
-  }
-
-  // Get auctioner details from Firestore
-  getAuctionerDetails(): Observable<any> {
-    const userId = this.getUserId();
-    return this.firestore.collection('auctioners').doc(userId).valueChanges();
-  }
-
-  // Get auctioner product stats from Firestore
-  getProductStats(): Observable<any> {
-    const userId = this.getUserId();
-    return this.firestore.collection('auctioners').doc(userId).collection('products').valueChanges();
-  }
-
-  // Get auction progress data from Firestore
-  getAuctionProgress(): Observable<any> {
-    const userId = this.getUserId();
-    return this.firestore.collection('auctioners').doc(userId).collection('auctionProgress').valueChanges();
-  }
-
-  // Get profile picture from Firebase Storage
-  getProfilePicture(): Observable<any> {
-    const userId = this.getUserId();
-    return this.storage.ref(`profile-pictures/${userId}`).getDownloadURL();
-  }
 }

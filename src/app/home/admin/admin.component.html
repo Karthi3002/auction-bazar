@@ -1,1 +1,440 @@
-<p>admin works!</p>
+<body>
+  <!--==================== Global Loading Bar ==============================
+  ==========================================================================-->
+  <div *ngIf="isLoading" class="loading-bar"></div>
+  <div class="admin-container">
+    <!--======================= Sidebar ====================================
+    ========================================================================-->
+    <aside class="admin-sidebar">
+      <h2>Admin Panel</h2>
+      <!--================== Admin Navigation ==============================
+      ======================================================================-->
+      <nav class="admin-nav">
+        <a href="javascript:void(0)" 
+          [ngClass]="{ 'active-link': currentSection === 'dashboard' }" 
+          (click)="navigate('dashboard')">Dashboard</a>
+
+        <a href="javascript:void(0)" 
+          [ngClass]="{ 'active-link': currentSection === 'progress' }" 
+          (click)="navigate('progress')">Auction Progress</a>
+
+        <a href="javascript:void(0)" 
+          [ngClass]="{ 'active-link': currentSection === 'bids-progress' }" 
+          (click)="navigate('bids-progress')">Bids Progress</a>
+
+        <a href="javascript:void(0)" 
+          [ngClass]="{ 'active-link': currentSection === 'overall-progress' }" 
+          (click)="navigate('overall-progress')">Overall Progress</a>
+
+        <a href="javascript:void(0)" (click)="logout()">Logout</a>
+      </nav>
+    </aside>
+
+      <!--=========================== Main Content ==============================
+      ===========================================================================-->
+    <main class="admin-main">
+
+      <!--================= Show Welcome Message by Default =====================
+      ===========================================================================-->
+      <h2 *ngIf="!currentSection || currentSection !== 'dashboard'">Welcome, Admin</h2>
+
+      <!--================== Admin Dashboard Section =========================
+      ========================================================================-->
+
+      <section *ngIf="currentSection === 'dashboard'" class="admin-section dashboard-section">
+
+        <!--========== Admin Profile =============
+        ==========================================-->
+        <div class="dashboard-block admin-profile">
+          <h3>Admin Details</h3>
+          <img [src]="adminData?.profileImage" alt="Admin Profile" />
+          <p><strong>Name:</strong> {{ adminData?.username }}</p>
+          <p><strong>Email:</strong> {{ adminData?.email }}</p>
+          <p><strong>Password:</strong> {{ adminData?.password }}</p>
+          <p><strong>Address:</strong> {{ adminData?.address }}</p>
+          <p><strong>Phone:</strong> {{ adminData?.phoneNumber }}</p>
+        </div>
+
+        <!--=========== User Stats ===============
+        ==========================================-->
+        <div class="dashboard-block user-stats">
+          <h3>User Details</h3>
+          <p><strong>Total Users:</strong> {{ totalUsers }}</p>
+          <p><strong>Auctioneers:</strong> {{ totalAuctioneers }}</p>
+          <p><strong>Bidders:</strong> {{ totalBidders }}</p>
+        </div>
+
+        <!--========== Product Stats =============
+        ==========================================-->
+        <div class="dashboard-block product-stats">
+          <h3>Product Details</h3>
+          <p><strong>Total Products:</strong> {{ totalProducts }}</p>
+          <p><strong>Active:</strong> {{ activeProducts }}</p>
+          <p><strong>Sold:</strong> {{ soldProducts }}</p>
+          <p><strong>Upcoming:</strong> {{ upcomingProducts }}</p>
+        </div>
+      </section>
+
+      <!--======================= Auction Progress Section ===============================
+      ====================================================================================-->
+
+      <section *ngIf="currentSection === 'progress'" class="admin-section auction-progress-section">
+        <h3>Auctioneer Overview</h3>
+
+        <!--================ Filters ====================
+        =================================================-->
+        <div class="auction-filters">
+          <!--====== Search Bar ========
+          ==============================-->
+          <input type="text" placeholder="Search auctioneer by name, email or UID..." [(ngModel)]="searchQuery" (input)="applyAuctioneerFilters()" />
+          <!--===== Status Filter ======
+          ==============================-->
+          <select [(ngModel)]="statusFilter" (change)="applyAuctioneerFilters()">
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Sold">Sold</option>
+            <option value="Upcoming">Upcoming</option>
+          </select>
+          <!--===== Category Filter =====
+          ===============================-->  
+          <select [(ngModel)]="categoryFilter" (change)="applyAuctioneerFilters()">
+            <option value="">All Categories</option>
+            <option value="electronics">Electronics</option>
+            <option value="fashion">Fashion</option>
+            <option value="books">Books</option>
+            <option value="furniture">Furniture</option>
+            <option value="vehicles">Vehicles</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+
+        <!--=============== Auctioneer Table ==============
+        ===================================================-->
+        <div class="table-responsive">
+          <table class="auctioneer-table">
+            <thead>
+              <tr>
+                <th>Profile</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>UID</th>
+                <th>Created At</th>
+                <th>Products</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let auctioneer of filteredAuctioneers">
+                <tr>
+                  <td><img [src]="auctioneer.profileImage" alt="Profile" class="profile-img" /></td>
+                  <td>{{ auctioneer.name }}</td>
+                  <td>{{ auctioneer.email }}</td>
+                  <td>{{ auctioneer.password }}</td>
+                  <td>{{ auctioneer.phoneNumber }}</td>
+                  <td>{{ auctioneer.address }}</td>
+                  <td>{{ auctioneer.uid }}</td>
+                  <td>{{ auctioneer.createdAt }}</td>
+                  <td>
+                    {{ auctioneer.products.length }}
+                    <button class="expand-btn"
+                      (click)="toggleProductDetails(auctioneer.uid)"
+                      [ngClass]="{ 'expanded': expandedAuctioneerUID === auctioneer.uid }">
+                      <span class="arrow-icon"></span>
+                    </button>
+                  </td>
+                </tr>
+
+                <!--======= Expandable Product Details ========
+                ===============================================-->
+                <tr *ngIf="expandedAuctioneerUID === auctioneer.uid">
+                  <td colspan="9">
+                    <div class="inner-scroll-container">
+                      <table class="inner-product-table">
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Condition</th>
+                            <th>Status</th>
+                            <th>Start Date</th>
+                            <th>Start Time</th>
+                            <th>End Date</th>
+                            <th>End Time</th>
+                            <th>Starting Price</th>
+                            <th>Bidded Price</th>
+                            <th>Bidder ID</th>
+                            <th>Bidder Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Profit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let p of auctioneer.products">
+                            <td>{{ p.productId || 'N/A' }}</td>
+                            <td><img [src]="p.productImage" alt="Product" class="product-thumb" /></td>
+                            <td>{{ p.productName || 'N/A'}}</td>
+                            <td>{{ p.description || 'N/A'}}</td>
+                            <td>{{ p.productCategory || 'N/A'}}</td>
+                            <td>{{ p.condition || 'N/A'}}</td>
+                            <td>{{ getProductStatus(p) || 'N/A'}}</td>
+                            <td>{{ p.sessionDate || 'N/A'}}</td>
+                            <td>{{ formatTime(p.sessionTime) || 'N/A'}}</td>
+                            <td>{{ p.endDate || 'N/A'}}</td>
+                            <td>{{ formatTime(p.endTime) || 'N/A'}}</td>
+                            <td>₹{{ p.minimumPrice || 'N/A'}}</td>
+                            <td>₹{{ p.currentHighestBid || 'N/A' }}</td>
+                            <td>{{ p.currentHighestBidder || 'N/A' }}</td>
+                            <td>{{ p.currentHighestBidderName || 'N/A' }}</td>
+                            <td>{{ p.currentHighestBidderPhone || 'N/A' }}</td>
+                            <td>{{ p.currentHighestBidderEmail || 'N/A' }}</td>
+                            <td>
+                              ₹{{
+                                p.currentHighestBid && p.minimumPrice
+                                  ? (p.currentHighestBid - p.minimumPrice)
+                                  : '0'
+                              }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!--========================== Bids Progress Section ============================
+      =================================================================================-->
+      
+      <section *ngIf="currentSection === 'bids-progress'" class="admin-section bids-progress-section">
+        <h3>Bids Progress</h3>
+
+        <!--=================== Filters ======================
+        ======================================================-->
+        <div class="auction-filters">
+          <!--====== Search Bar ======
+          ============================-->
+          <input type="text" placeholder="Search by bidder name, email or UID..." [(ngModel)]="searchQuery" (input)="applyBidderFilters()" />
+          <!--===== Status Filter =====
+          ============================-->
+          <select [(ngModel)]="statusFilter" (change)="applyBidderFilters()">
+            <option value="">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Won">Won</option>
+            <option value="Outbid">Outbid</option>
+          </select>
+          <!--===== Category Filter =====
+          ============================-->
+          <select [(ngModel)]="categoryFilter" (change)="applyBidderFilters()">
+            <option value="">All Categories</option>
+            <option value="electronics">Electronics</option>
+            <option value="fashion">Fashion</option>
+            <option value="books">Books</option>
+            <option value="furniture">Furniture</option>
+            <option value="vehicles">Vehicles</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+
+        <!--=============== Bidders Table ================
+        ==================================================-->
+        <div class="table-responsive">
+          <table class="auctioneer-table">
+            <thead>
+              <tr>
+                <th>Profile</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>UID</th>
+                <th>Created At</th>
+                <th>Bids</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let bidder of filteredBidders">
+                <tr>
+                  <td><img [src]="bidder.profileImage" alt="Profile" class="profile-img" /></td>
+                  <td>{{ bidder.name }}</td>
+                  <td>{{ bidder.email }}</td>
+                  <td>{{ bidder.password }}</td>
+                  <td>{{ bidder.phoneNumber }}</td>
+                  <td>{{ bidder.address }}</td>
+                  <td>{{ bidder.uid }}</td>
+                  <td>{{ bidder.createdAt }}</td>
+                  <td>
+                    {{ bidder.bids.length }}
+                    <button class="expand-btn" (click)="toggleBidDetails(bidder.uid)" [ngClass]="{'expanded': expandedBidderUID === bidder.uid}">
+                      <span class="arrow-icon"></span>
+                    </button>
+                  </td>
+                </tr>
+
+                <!--========== Expandable Bids Details ===========
+                ==================================================-->
+                <tr *ngIf="expandedBidderUID === bidder.uid">
+                  <td colspan="9">
+                    <div class="inner-scroll-container">
+                      <table class="inner-product-table">
+                        <thead>
+                          <tr>
+                            <th>Bid ID</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Image</th>
+                            <th>Product ID</th>
+                            <th>Auctioneer ID</th>
+                            <th>Auctioneer Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Start Price</th>
+                            <th>Bidded Price</th>
+                            <th>Status</th>
+                            <th>Profit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let bid of bidder.bids">
+                            <td>{{ bid.bidId }}</td>
+                            <td>{{ bid.productName }}</td>
+                            <td>{{ bid.productCategory }}</td>
+                            <td><img [src]="bid.productImage" alt="Product" class="product-thumb" /></td>
+                            <td>{{ bid.productId }}</td>
+                            <td>{{ bid.auctioneerId }}</td>
+                            <td>{{ bid.auctioneerName }}</td>
+                            <td>{{ bid.auctioneerEmail }}</td>
+                            <td>{{ bid.auctioneerPhone }}</td>
+                            <td>₹{{ bid.minimumPrice }}</td>
+                            <td>₹{{ bid.biddedPrice }}</td>
+                            <td>{{ bid.status }}</td>
+                            <td>₹{{ bid.profit }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!--======================= Overall Progress Section ============================
+      ==================================================================================-->
+
+      <section *ngIf="currentSection === 'overall-progress'" class="admin-section overall-progress-section">
+        <h3>Overall Progress</h3>
+
+        <!--======= Different Tabs For Products & Bids =========
+        ========================================================-->
+        <div class="tab-nav">
+          <button [class.active]="selectedTab === 'all'" (click)="selectedTab = 'all'">All Products</button>
+          <button [class.active]="selectedTab === 'bids'" (click)="selectedTab = 'bids'">Bidded Products</button>
+        </div>
+
+        <!--============ Filters =================
+        ==========================================-->
+        <div class="filters">
+          <!--====== Search Bar ========
+          ==============================-->
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Search by product or name..." (input)="applyFilters()" />
+          <!--===== Status & Category Filters =====
+          =========================================-->
+          <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+            <option value="">All Status</option>
+            <option *ngFor="let status of selectedTab === 'all' ? productStatus : bidStatus">{{ status }}</option>
+          </select>
+          <select [(ngModel)]="categoryFilter" (change)="applyFilters()">
+            <option value="">All Categories</option>
+            <option *ngFor="let cat of categories">{{ cat }}</option>
+          </select>
+          <input type="date" [(ngModel)]="startDate" (change)="applyFilters()" />
+          <input type="date" [(ngModel)]="endDate" (change)="applyFilters()" />
+        </div>
+
+        <!--=================== All Products Table ====================
+        ===============================================================-->
+        <div *ngIf="selectedTab === 'all'" class="table-container">
+          <table class="scroll-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>Image</th><th>Name</th><th>Category</th><th>Condition</th><th>Auctioneer ID</th><th>Auctioneer Name</th>
+                <th>Description</th><th>Start Date</th><th>Start Time</th><th>End Date</th><th>End Time</th>
+                <th>Min Price</th><th>Bid Price</th><th>Status</th><th>Profit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of filteredProducts">
+                <td>{{ p.id }}</td>
+                <td><img [src]="p.image" class="thumb" /></td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.category }}</td>
+                <td>{{ p.condition }}</td>
+                <td>{{ p.auctioneerId }}</td>
+                <td>{{ p.auctioneerName }}</td>
+                <td>{{ p.description }}</td>
+                <td>{{ p.startDate }}</td>
+                <td>{{ formatTime(p.startTime) }}</td>
+                <td>{{ p.endDate }}</td>
+                <td>{{ formatTime(p.endTime) }}</td>
+                <td>₹{{ p.minPrice }}</td>
+                <td>₹{{ p.bidPrice || 'N/A' }}</td>
+                <td [ngClass]="'status-' + p.status">{{ p.status }}</td>
+                <td>₹{{ p.bidPrice && p.minPrice ? p.bidPrice - p.minPrice : 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!--================= Bidded Products Table =======================
+        ===================================================================-->
+        <div *ngIf="selectedTab === 'bids'" class="table-container">
+          <table class="scroll-table">
+            <thead>
+              <tr>
+                <th>Bid ID</th><th>Image</th><th>Name</th><th>Category</th>
+                <th>Bidder ID</th><th>Bidder Name</th><th>Bidder Email</th><th>Phone</th>
+                <th>Product ID</th>
+                <th>Auctioneer ID</th><th>Auctioneer Name</th><th>Email</th><th>Phone</th>
+                <th>Start Price</th><th>Bid Price</th><th>Status</th><th>Profit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of filteredBids">
+                <td>{{ b.id }}</td>
+                <td><img [src]="b.image" class="thumb" /></td>
+                <td>{{ b.name }}</td>
+                <td>{{ b.category }}</td>
+                <td>{{ b.bidderId }}</td>
+                <td>{{ b.bidderName }}</td>
+                <td>{{ b.bidderEmail }}</td>
+                <td>{{ b.bidderPhone }}</td>
+                <td>{{ b.productId }}</td>
+                <td>{{ b.auctioneerId }}</td>
+                <td>{{ b.auctioneerName }}</td>
+                <td>{{ b.auctioneerEmail }}</td>
+                <td>{{ b.auctioneerPhone }}</td>
+                <td>₹{{ b.minPrice }}</td>
+                <td>₹{{ b.bidAmount }}</td>
+                <td [ngClass]="'status-' + b.status">{{ b.status }}</td>
+                <td>₹{{ b.profit }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>

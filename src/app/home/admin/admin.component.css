@@ -1,0 +1,560 @@
+body {
+  background: linear-gradient(150deg, #6A11CB , #8C0B8E, #7B0EAC);
+  width: 100%;
+  min-height: 100vh;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  margin: -8px;
+  overflow-x: hidden;
+}
+/* 🌌 Admin Container Layout */
+.admin-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  padding: 2rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* 🧊 Sidebar with Glassmorphism */
+.admin-sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  padding: 2rem 1.5rem;
+  color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* 🔠 Sidebar Heading */
+.admin-sidebar h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  background: linear-gradient(90deg, #00fff7, #ffb6f9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 🧭 Navigation Links */
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-nav a {
+  padding: 0.8rem 1rem;
+  color: #fff;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+    transition: background 0.3s ease, transform 0.3s ease, color 0.3s ease;
+}
+
+.admin-nav a:hover {
+  background: linear-gradient(135deg, #6a11cb, #8e2de2);
+  transform: translateX(5px);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
+}
+
+.admin-nav a.active-link {
+  background: linear-gradient(135deg, #00c9ff, #92fe9d);
+  color: #000;
+  font-weight: bold;
+  transform: translateX(8px) scale(1.05);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+}
+
+/* 🪟 Main Content Area */
+.admin-main {
+  flex-grow: 1;
+  max-width: 70%;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  color: #fff;
+}
+
+/* ✨ Welcome Text */
+.admin-main h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #ffdefa;
+}
+
+/* 📁 Section Styling */
+.admin-section {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 2rem;
+}
+/* 🌟 Admin Dashboard Section */
+.dashboard-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: space-between;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.04));
+  border-radius: 20px;
+  animation: fadeInDashboard 0.6s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+
+/* 🎴 Common Block Card Style */
+.dashboard-block {
+  flex: 1 1 320px;
+  padding: 2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.dashboard-block:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ✨ Block Header */
+.dashboard-block h3 {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #ffdefa;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.75rem;
+}
+
+/* 🧾 Details Text */
+.dashboard-block p {
+  font-size: 1rem;
+  color: #e8dcff;
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.dashboard-block p strong {
+  color: #00ffcc;
+  font-weight: 600;
+}
+
+/* 🖼 Admin Profile Image */
+.admin-profile img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 1rem;
+  border: 3px solid #00fff7;
+  box-shadow: 0 0 15px #00fff7;
+  transition: transform 0.3s ease;
+}
+
+.admin-profile img:hover {
+  transform: scale(1.05);
+}
+
+/* 🎉 Entry Animation */
+@keyframes fadeInDashboard {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🔷 Auction Progress Section Wrapper */
+.auction-progress-section {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  color: #fff;
+}
+
+/* 🔍 Filter Bar */
+.auction-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.auction-filters input,
+.auction-filters select {
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  color: #000000;
+  font-size: 0.95rem;
+  backdrop-filter: blur(10px);
+  flex: 1 1 250px;
+  transition: all 0.3s ease;
+}
+
+.auction-filters input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 🧾 Responsive Table Wrapper */
+.table-responsive {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.05);
+  max-height: 400px;
+  max-width: 140vh;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* 🧍 Auctioneer Table */
+.auctioneer-table {
+  width: 100%;
+  min-width: 1100px;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.auctioneer-table th,
+.auctioneer-table td {
+  padding: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 0.9rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.auctioneer-table thead {
+  background: rgba(255, 255, 255, 0.08);
+  color: #00fff7;
+}
+
+/* 👤 Profile Images */
+.profile-img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #00fff7;
+  box-shadow: 0 0 8px #00fff7;
+}
+
+/* 🔘 Expand Button */
+.expand-btn {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  background: linear-gradient(135deg, #6a11cb, #8c0b8e);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.expand-btn:hover {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #7b0eac, #00c9ff);
+}
+
+.arrow-icon {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border: solid #00fff7;
+  border-width: 0 2px 2px 0;
+  padding: 3px;
+  transform: rotate(45deg); /* pointing down */
+  transition: transform 0.3s ease-in-out;
+}
+
+/* 🔼 Rotate on Expand */
+.expand-btn.expanded .arrow-icon {
+  transform: rotate(-135deg); /* pointing up */
+}
+
+/* 🧾 Scrollable Inner Product Table */
+.inner-scroll-container {
+  max-height: 260px;
+  max-width: 220vh;
+  overflow-x: auto;
+  overflow-y: auto;
+  border-radius: 10px;
+  margin-top: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.05);
+}
+
+/* 📦 Inner Product Table */
+.inner-product-table {
+  min-width: 1200px;
+  border-collapse: collapse;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.inner-product-table th,
+.inner-product-table td {
+  padding: 0.7rem;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  color: #f0f0f0;
+  white-space: nowrap;
+}
+
+.inner-product-table thead {
+  background: rgba(255, 255, 255, 0.08);
+  color: #00ffc3;
+}
+
+/* 🖼️ Product Thumbnail */
+.product-thumb {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+
+.table-responsive::-webkit-scrollbar,
+.inner-scroll-container::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.table-responsive::-webkit-scrollbar-thumb,
+.inner-scroll-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6a11cb, #8c0b8e);
+  border-radius: 4px;
+}
+
+
+/*////////////////
+//////////////////////
+/////////////////////*/
+/* 📊 Overall Progress Section Wrapper */
+.overall-progress-section {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  color: #fff;
+}
+
+/* 🧭 Tabs */
+.tab-nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.tab-nav button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+.tab-nav button.active {
+  background: linear-gradient(135deg, #6a11cb, #8c0b8e);
+  color: #00fff7;
+}
+.tab-nav button:hover {
+  transform: scale(1.05);
+}
+
+/* 🔍 Filters */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.filters input,
+.filters select {
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  color: #000;
+  font-size: 0.95rem;
+  backdrop-filter: blur(10px);
+  flex: 1 1 200px;
+}
+.filters input[type='date'] {
+  min-width: 160px;
+}
+
+.filters input::placeholder {
+  color: rgba(255, 255, 255, 0.664);
+}
+
+/* 🧾 Table Container */
+.table-container {
+  max-height: 400px;
+  max-width: 220vh;
+  overflow-x: auto;
+  overflow-y: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.05);
+}
+
+/* 📦 Scroll Tables */
+.scroll-table {
+  width: 100%;
+  min-width: 1300px;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.scroll-table th,
+.scroll-table td {
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  font-size: 0.9rem;
+  color: #f2f2f2;
+  white-space: nowrap;
+}
+
+.scroll-table thead {
+  background: rgba(255, 255, 255, 0.08);
+  color: #00ffc3;
+}
+
+/* 🖼️ Thumbnail Style */
+.thumb {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+/* 🖱️ Custom Scrollbars */
+.table-container::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.table-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6a11cb, #8c0b8e);
+  border-radius: 4px;
+}
+
+.scroll-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.scroll-table td.status-Won {
+  color: #00ff00;
+  font-weight: bold;
+}
+.scroll-table td.status-Outbid {
+  color: #ff5555;
+  font-weight: bold;
+}
+.scroll-table td.status-Pending {
+  color: #ffaa00;
+  font-weight: bold;
+}
+
+.scroll-table td.status-Active {
+  color: #00ff00;
+  font-weight: bold;
+}
+.scroll-table td.status-Sold {
+  color: #ff5555;
+  font-weight: bold;
+}
+.scroll-table td.status-Upcoming {
+  color: #ffaa00;
+  font-weight: bold;
+}
+
+
+/* 🌀 Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(to right, #2196f3, #42a5f5, #64b5f6);
+  z-index: 10000;
+  animation: loadingSlide 1.5s infinite ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes loadingSlide {
+  0% { transform: scaleX(0); transform-origin: left; }
+  50% { transform: scaleX(0.5); transform-origin: center; }
+  100% { transform: scaleX(1); transform-origin: right; }
+}

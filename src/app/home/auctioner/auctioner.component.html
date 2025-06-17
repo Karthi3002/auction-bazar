@@ -1,37 +1,72 @@
 <body class="main-background">
-  <div class="navbar">
+
+  <!--====================== Global Loading Bar ========================
+  ======================================================================-->
+  <div *ngIf="isLoading" class="loading-bar"></div>
+
+  <!--========================= Navbar ================================
+  =====================================================================-->
+  <nav class="navbar">
     <div class="navbar-brand">
       <h2>Auction Bazaar</h2>
     </div>
-    <div class="navbar-menu">
-      <a href="javascript:void(0)" class="nav-item" (click)="navigateToDashboard()">Dashboard</a>
-      <a href="javascript:void(0)" class="nav-item" (click)="toggleAddProduct()">Add Product</a>
+
+    <!--=========== Hamburger Menu ================
+    ===============================================-->
+    <div class="hamburger" (click)="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <!--================= Navigation Menu ===============
+    =====================================================-->
+    <div class="navbar-menu" [ngClass]="{ 'active': isMenuOpen }">
+      <span class="close-btn" (click)="toggleMenu()">&times;</span>
+
+      <a class="nav-item" (click)="navigateToDashboard()">Dashboard</a>
+      <a class="nav-item" (click)="toggleAddProduct()">Add Product</a>\
+
+      <!-- ===== Dropdown Menu For Product Categories ===
+      ===================================================-->
+      
       <div class="dropdown">
-        <a href="javascript:void(0)" class="nav-item dropdown-toggle">Your Products</a>
-        <div class="dropdown-menu">
-          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('electronics')">Electronics</a>
-          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('fashion')">Fashion</a>
-          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('books')">Books</a>
-          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('furniture')">Furniture</a>
-          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('vehicles')">Vehicles</a>
-          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('others')">Others</a>
-          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('all')">All</a>
-          <!-- Add more categories here -->
+        <a class="nav-item dropdown-toggle" (click)="toggleSubMenu()">
+          Products Categories <span class="arrow" [class.rotate]="isSubMenuOpen">▼</span>
+        </a>
+        <div class="dropdown-menu" [class.show]="isSubMenuOpen">
+          <a class="dropdown-item" (click)="filterCategory('electronics')">Electronics</a>
+          <a class="dropdown-item" (click)="filterCategory('fashion')">Fashion</a>
+          <a class="dropdown-item" (click)="filterCategory('books')">Books</a>
+          <a class="dropdown-item" (click)="filterCategory('furniture')">Furniture</a>
+          <a class="dropdown-item" (click)="filterCategory('vehicles')">Vehicles</a>
+          <a class="dropdown-item" (click)="filterCategory('others')">Others</a>
+          <a class="dropdown-item" (click)="filterCategory('all')">All</a>
         </div>
       </div>
-      <a href="#" class="nav-item logout">Logout</a>
+      <a class="nav-item logout" (click)="logout()">Logout</a>
     </div>
-  </div>
+  </nav>
 
+  <!--========================= Dashboard Layout ==============================
+  =============================================================================-->
   <div class="auctioneer-container">
-    <div class="sidebar">
+
+    <!--============ Sidebar ===================
+    ============================================-->
+    <aside class="auctioneer-sidebar">
       <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="Auctioneer Profile" />
       <h1>{{ auctioneerUsername }}</h1>
-      <p>Auctioneer | {{ auctioneerEmail }}</p>
-    </div>
+      <p>Auctioneer  {{ auctioneerEmail }}</p>
+    </aside>
 
+    <!--====== Main Product Content ============
+    ============================================-->
     <div class="main-content" id="products">
       <h2>Your Products</h2>
+
+      <!--======== Filters & Search Bar ========
+      ==========================================-->
       <div class="filter-bar">
         <label for="productFilter">Filter:</label>
         <select id="productFilter" (change)="filterProductsByStatus($event)">
@@ -41,26 +76,52 @@
           <option value="sold-out">Sold Out</option>
         </select>
       </div>
+
+      <!--==== Search Bar ====
+      ========================-->
       <div class="search-bar">
         <input type="text" placeholder="Search Products..." (input)="searchProducts($event)" />
       </div>
-      <div class="product-grid">
+
+      <!--==== Loading Spinner =====
+      ==============================-->
+      <div class="loading-spinner" *ngIf="isLoading">
+        <p>Loading products...</p>
+      </div>
+
+      <!--==================== Product Cards =================
+      ========================================================-->
+      <section class="product-grid">
         <div *ngFor="let product of filteredProducts" class="product-card" (click)="viewProductDetails(product)">
           <img [src]="product.productImage" alt="Product Image" />
           <h4>{{ product.productName }}</h4>
-          <p>Starting Price: ${{ product.minimumPrice }}</p>
-          <button class="status-button">
+          <p>Starting Price: ₹{{ product.minimumPrice }}</p>
+
+          <!--==== Highest Bid (Active or Sold) ====
+          ==========================================-->
+          <div *ngIf="['Active', 'Sold'].includes(getProductStatus(product)) && product.currentHighestBid">
+            <p><strong>Current Highest Bid:</strong> ₹{{ product.currentHighestBid }}</p>
+            <p><strong>By:</strong> {{ product.currentHighestBidderName || 'N/A' }}</p>
+          </div>
+
+          <button class="status-button" [ngClass]="getStatusClass(product)">
             {{ getProductStatus(product) }}
           </button>
         </div>
-      </div>
+      </section>
+
+      <!--=========== Product Detail Modal (Auctioneer Side) =================
+      ========================================================================-->
+
       <div class="product-details-modal" *ngIf="selectedProduct">
         <div class="modal-content">
           <span class="close-button" (click)="closeProductDetails()">&times;</span>
+          
           <h2>{{ selectedProduct.productName }}</h2>
           <img [src]="selectedProduct.productImage" alt="Product Image" />
+
           <p><strong>Category:</strong> {{ selectedProduct.productCategory }}</p>
-          <p><strong>Starting Price:</strong> {{ selectedProduct.minimumPrice }}</p>
+          <p><strong>Starting Price:</strong> ₹{{ selectedProduct.minimumPrice }}</p>
           <p><strong>Quantity:</strong> {{ selectedProduct.quantity }}</p>
           <p><strong>Condition:</strong> {{ selectedProduct.condition }}</p>
           <p><strong>Warranty:</strong> {{ selectedProduct.warranty || 'N/A' }}</p>
@@ -69,30 +130,40 @@
           <p><strong>Auction Time:</strong> {{ formatTime(selectedProduct.sessionTime) }}</p>
           <p><strong>Auction End Date:</strong> {{ selectedProduct.endDate }}</p>
           <p><strong>Auction End Time:</strong> {{ formatTime(selectedProduct.endTime) }}</p>
+
+          <!--======== Bidder Info (if any) ===========
+          =============================================-->
+          <div *ngIf="selectedProduct.currentHighestBidderName" class="bidder-details">
+            <h3>Highest Bidder Details</h3>
+            <p><strong>Name:</strong> {{ selectedProduct.currentHighestBidderName }}</p>
+            <p><strong>Email:</strong> {{ selectedProduct.currentHighestBidderEmail }}</p>
+            <p><strong>Phone:</strong> {{ selectedProduct.currentHighestBidderPhone }}</p>
+            <p><strong>Bidded Amount:</strong> ₹{{ selectedProduct.currentHighestBid }}</p>
+          </div>
         </div>
-      </div>      
+      </div>
     </div>
+
+    <!--======================== Add Product Form ========================
+    ======================================================================-->
 
     <div class="add-product" [ngClass]="{ 'slide-in': showAddProduct, 'slide-out': !showAddProduct }">
       <h3>Add New Product</h3>
+  
       <form [formGroup]="auctionForm" (ngSubmit)="submitProduct()">
+    
+        <!--======= Product Name =======
+        ================================-->
         <label for="productName">Product Name:</label>
-        <input 
-          id="productName" 
-          formControlName="productName" 
-          type="text" 
-          required 
-        />
+        <input id="productName" formControlName="productName" type="text" required />
         <div *ngIf="auctionForm.get('productName')?.touched && auctionForm.get('productName')?.invalid" class="error-message">
           Product Name is required.
         </div>
-    
+
+        <!--====== Product Category =========
+        =====================================-->
         <label for="productCategory">Product Category:</label>
-        <select 
-          id="productCategory" 
-          formControlName="productCategory" 
-          required
-        >
+        <select id="productCategory" formControlName="productCategory" required>
           <option value="" disabled selected>Select a Category</option>
           <option value="electronics">Electronics</option>
           <option value="fashion">Fashion</option>
@@ -104,35 +175,27 @@
         <div *ngIf="auctionForm.get('productCategory')?.touched && auctionForm.get('productCategory')?.invalid" class="error-message">
           Product Category is required.
         </div>
-    
+
+        <!--======= Minimum Price ========
+        ==================================-->
         <label for="minimumPrice">Minimum Price:</label>
-        <input 
-          id="minimumPrice" 
-          formControlName="minimumPrice" 
-          type="number" 
-          required 
-        />
+        <input id="minimumPrice" formControlName="minimumPrice" type="number" required />
         <div *ngIf="auctionForm.get('minimumPrice')?.touched && auctionForm.get('minimumPrice')?.invalid" class="error-message">
           Minimum Price is required and must be greater than 0.
         </div>
-    
+
+        <!--====== Quantity =============
+        =================================-->
         <label for="quantity">Quantity Available:</label>
-        <input 
-          id="quantity" 
-          formControlName="quantity" 
-          type="number" 
-          required 
-        />
+        <input id="quantity" formControlName="quantity" type="number" required />
         <div *ngIf="auctionForm.get('quantity')?.touched && auctionForm.get('quantity')?.invalid" class="error-message">
           Quantity is required and must be greater than 0.
         </div>
-    
+
+        <!--===== Product Condition ========
+        ====================================-->
         <label for="condition">Product Condition:</label>
-        <select 
-          id="condition" 
-          formControlName="condition" 
-          required
-        >
+        <select id="condition" formControlName="condition" required>
           <option value="" disabled selected>Select Condition</option>
           <option value="new">New</option>
           <option value="used">Used</option>
@@ -140,100 +203,74 @@
         <div *ngIf="auctionForm.get('condition')?.touched && auctionForm.get('condition')?.invalid" class="error-message">
           Product Condition is required.
         </div>
-    
-        <label for="warranty">Warranty Period (if any):</label>
-        <input 
-          id="warranty" 
-          formControlName="warranty" 
-          type="text" 
-        />
 
+        <!--========== Warranty ================
+        ========================================-->
+        <label for="warranty">Warranty Period (if any):</label>
+        <input id="warranty" formControlName="warranty" type="text" />
+
+        <!--======= Auction Start Date ==========
+        =========================================-->
         <label for="sessionDate">Auction Date:</label>
-        <input 
-          id="sessionDate" 
-          formControlName="sessionDate" 
-          type="date" 
-          required 
-        />
+        <input id="sessionDate" formControlName="sessionDate" type="date" required />
         <div *ngIf="auctionForm.get('sessionDate')?.touched && auctionForm.get('sessionDate')?.invalid" class="error-message">
           Auction Date is required.
         </div>
-    
+
+        <!--====== Auction Start Time ==========
+        ========================================-->
         <label for="sessionTime">Auction Time:</label>
-        <input 
-          id="sessionTime" 
-          formControlName="sessionTime" 
-          type="time" 
-          required 
-        />
+        <input id="sessionTime" formControlName="sessionTime" type="time" required />
         <div *ngIf="auctionForm.get('sessionTime')?.touched && auctionForm.get('sessionTime')?.invalid" class="error-message">
           Auction Time is required.
         </div>
 
+        <!--======= Auction End Date =========
+        ======================================-->
         <label for="endDate">Auction End Date:</label>
-        <input 
-          id="endDate" 
-          formControlName="endDate" 
-          type="date" 
-          required 
-        />
+        <input id="endDate" formControlName="endDate" type="date" required />
         <div *ngIf="auctionForm.get('endDate')?.touched && auctionForm.get('endDate')?.invalid" class="error-message">
           Auction End Date is required.
         </div>
-    
+
+        <!--======= Auction End Time =========
+        ======================================-->
         <label for="endTime">Auction End Time:</label>
-        <input 
-          id="endTime" 
-          formControlName="endTime" 
-          type="time" 
-          required 
-        />
+        <input id="endTime" formControlName="endTime" type="time" required />
         <div *ngIf="auctionForm.get('endTime')?.touched && auctionForm.get('endTime')?.invalid" class="error-message">
           Auction End Time is required.
         </div>
-    
+
+        <!--======= Product Description ==========
+        ==========================================-->
         <label for="description">Product Description:</label>
-        <textarea 
-          id="description" 
-          formControlName="description"
-        ></textarea>
-    
+        <textarea id="description" formControlName="description"></textarea>
+
+        <!--========= Product Image ============
+        ========================================-->
         <label for="productImage">Product Image:</label>
-        <input 
-          id="productImage" 
-          type="file" 
-          (change)="onSelect($event)" 
-          required 
-        />
+        <input id="productImage" type="file" (change)="onSelect($event)" required />
         <div *ngIf="!selectedImage && auctionForm.get('productImage')?.touched" class="error-message">
           Product Image is required.
         </div>
-        <img 
-          *ngIf="selectedImage" 
-          [src]="selectedImage" 
-          alt="Preview" 
-          class="image-preview" 
-        />
-    
-        <button 
-          type="submit" 
-          [disabled]="isSubmitDisabled"
-        >
-          Submit Product
-        </button>
-        <button 
-          type="button" 
-          (click)="oncancel()"
-        >
-          Cancel
-        </button>
+
+        <!--============= Image Preview ==========
+        ==========================================-->
+        <img *ngIf="selectedImage" [src]="selectedImage" alt="Preview" class="image-preview" />
+
+        <!--================= Submit Buttons =================
+        ======================================================-->
+        <button type="submit" [disabled]="isSubmitDisabled">Submit Product</button>
+        <button type="button" (click)="oncancel()">Cancel</button>
       </form>
-    
+
+      <!--================= Success Message ===================
+      =========================================================-->
       <div *ngIf="successMessage" class="success-message">
         {{ successMessage }}
       </div>
     </div>
-  </div>    
+  </div>
 </body>
 
 

@@ -13,10 +13,24 @@ body {
   align-items: center;
 }
 
+/* 🔲 Scrollable Form Container */
+.form-wrapper {
+  width: 100%;
+  max-width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+
 /* Glassmorphism Effect for Form */
 form {
   width: 100%;
   max-width: 400px;
+  margin: 0 auto;
   padding: 30px;
   border-radius: 15px;
   background: rgba(255, 255, 255, 0.15);
@@ -146,9 +160,98 @@ a:hover{
   text-decoration: underline;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(to right, #2196f3, #42a5f5, #64b5f6);
+  z-index: 10000;
+  animation: loadingSlide 1.5s infinite ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes loadingSlide {
+  0% { transform: scaleX(0); transform-origin: left; }
+  50% { transform: scaleX(0.5); transform-origin: center; }
+  100% { transform: scaleX(1); transform-origin: right; }
+}
+
+/* 📱 Mobile Devices */
+@media (max-width: 480px) {
+  .form-wrapper{
+    height: 100vh;
+    overflow-y: auto;
+    padding: 10px 0;
+  }
   form {
     padding: 20px;
+    max-width: 95%;
+    margin: 20px auto;
+    border-radius: 12px;
+  }
+
+  label {
+    font-size: 13px;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 13px;
+    padding: 10px 10px 10px 30px;
+  }
+
+  .input-icon i {
+    font-size: 14px;
+    top: 30%;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .error {
+    font-size: 0.8em;
+  }
+}
+
+/* 📲 Tablet Devices */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .form-wrapper {
+    height: 100vh;
+    overflow-y: auto;
+    padding: 15px 0;
+  }
+
+  form {
+    padding: 25px;
+    max-width: 85%;
+    margin: 30px auto;
+    border-radius: 14px;
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 14px;
+    padding: 10px 10px 10px 32px;
+  }
+
+  .input-icon i {
+    font-size: 15px;
+    top: 33%;
+  }
+
+  button {
+    padding: 12px;
+    font-size: 15px;
   }
 }

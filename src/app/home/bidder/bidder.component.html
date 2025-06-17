@@ -1,20 +1,52 @@
 <body>
+  <!-- 🔄 Global Loading Bar -->
+  <div *ngIf="isLoading" class="loading-bar"></div>
   <div class="navbar">
     <div class="navbar-brand">
       <h2>Auction Bazaar</h2>
     </div>
-    <div class="navbar-menu">
-      <a href="javascript:void(0)" class="nav-item" (click)="viewProducts()">Bid on Products</a>
+
+    <!-- Hamburger Button for Tablet/Mobile -->
+    <div class="hamburger" (click)="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <!-- Responsive Menu -->
+    <div class="navbar-menu" [class.active]="mobileMenuOpen">
+      <span class="close-btn" (click)="toggleMobileMenu()">&times;</span>
+
+      <a href="javascript:void(0)" class="nav-item" (click)="navigateToDashboard()">Dashboard</a>
+
+      <div class="dropdown">
+        <a href="javascript:void(0)" class="nav-item dropdown-toggle" (click)="toggleDropdown()">
+          Product Categories
+          <span class="arrow" [class.rotate]="isDropdownOpen">▼</span>
+        </a>
+        <div class="dropdown-menu" [class.show]="isDropdownOpen">
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('electronics')">Electronics</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('fashion')">Fashion</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('books')">Books</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('furniture')">Furniture</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('vehicles')">Vehicles</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('others')">Others</a>
+          <a href="javascript:void(0)" class="dropdown-item" (click)="filterCategory('all')">All</a>
+        </div>
+      </div>
+
       <a href="javascript:void(0)" class="nav-item" (click)="viewYourBids()">Your Bids</a>
-      <a href="#" class="nav-item logout">Logout</a>
+      <a href="javascript:void(0)" class="nav-item logout" (click)="logout()">Logout</a>
     </div>
   </div>
+
   <div class="bidder-container">
     <div class="sidebar">
-      <img src="assets/bidder.jpg" alt="Bidder" />
-      <h1>Welcome, Bidder</h1>
+      <img *ngIf="bidderProfileImage" [src]="bidderProfileImage" alt="Bidder Profile" />
+      <h1>Welcome, {{ bidderUsername }}</h1>
       <p *ngIf="bidderEmail">Bidder | {{ bidderEmail }}</p>
     </div>
+    
 
     <!-- Main Content Area -->
     <div class="main-content" id="products" *ngIf="showProducts">
@@ -29,6 +61,18 @@
         />
       </div>
 
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <label for="productFilter">Filter:</label>
+        <select (change)="filterByStatus($event)">
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="sold">Sold</option>
+          <option value="upcoming">Upcoming</option>
+        </select>
+      </div>
+
+
       <!-- Product Grid -->
       <div class="product-grid">
         <div *ngIf="filteredProducts.length === 0" class="no-products">
@@ -39,26 +83,141 @@
           <img [src]="product.productImage" alt="{{ product.productName }}" class="product-image" />
           <h4>{{ product.productName }}</h4>
           <p>Starting Price: ${{ product.minimumPrice }}</p>
-          <p>Auctioneer: {{ product.auctioneer }}</p>
-          <button class="bid-button" (click)="placeBid(product)">Place Bid</button>
+          <p>Auctioneer: {{ product.auctioneerName }}</p>
+            <div *ngIf="product.isAlreadyBid" class="bid-label">
+              Current Highest Bid: ₹{{ product.currentHighestBid }}
+            </div>
+          <button class="details-button" (click)="viewProductDetails(product)">View Details</button>
+          <!-- Button for Place Bid -->
+          <button
+            class="bid-button"
+            [ngClass]="{
+              'sold-button': getProductStatus(product) === 'sold',
+              'active-button': getProductStatus(product) === 'active',
+              'upcoming-button': getProductStatus(product) === 'upcoming',
+              'already-bidded-button': product.alreadyBidded
+            }"
+            [disabled]="product.alreadyBidded || getProductStatus(product) !== 'active'"
+            (click)="handleBidButtonClick(product)">
+            {{ product.alreadyBidded ? 'Already Bidded' : getButtonLabel(product) }}
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Your Bids Section -->
     <div class="main-content" id="bids" *ngIf="showBids">
-      <h2>Your Bids</h2>
-      <div *ngIf="yourBids.length === 0" class="no-bids">
-        <p>You have not placed any bids yet.</p>
-      </div>
+    <!-- Back Button -->
+    <button class="back-button" (click)="goBackToProducts()">← Back to Products</button>
+  
+    <h2>Your Bids</h2>
+    <!-- No Bids Message -->
+    <div *ngIf="yourBids.length === 0" class="no-bids">
+      <p>You have not placed any bids yet.</p>
+    </div>
+
+    <!-- Filter Dropdown -->
+    <div class="filter-section bid-filter">
+      <label for="bidStatus">Filter Status:</label>
+      <select id="bidStatus" (change)="filterYourBids($event)">
+        <option value="">All</option>
+        <option value="Pending">Pending</option>
+        <option value="Won">Won</option>
+        <option value="Outbid">Outbid</option>
+      </select>
+    </div>
+
+      <!-- Bid History Container -->
       <div class="bid-history">
-        <div *ngFor="let bid of yourBids" class="bid-card">
-          <p>Product: {{ bid.productName }}</p>
-          <p>Bid Amount: ${{ bid.amount }}</p>
-          <p>Status: {{ bid.status }}</p>
+        <div *ngFor="let bid of filteredBids; let i = index" class="bid-card">
+          
+          <!-- Compact Summary -->
+          <div class="bid-summary" (click)="toggleBidDetails(i)">
+            <img [src]="bid.productImage" alt="Product Image" class="bid-product-image" />
+            
+            <div class="bid-info">
+              <p><strong>{{ bid.productName }}</strong></p>
+              <p>Bid: ₹{{ bid.amount }}</p>
+              <p>Time Left: {{ bid.remainingTime }}</p>
+              <p>Status: {{ bid.statusMessage }}</p>
+
+              <!-- Update or Status -->
+              <button
+                class="update-bid-button"
+                *ngIf="getBidStatusLabel(bid) === 'Update Bid'"
+                (click)="placeBid(bid); $event.stopPropagation()"
+              >Update Bid</button>
+
+              <span
+                *ngIf="getBidStatusLabel(bid) !== 'Update Bid'"
+                class="bid-status-label"
+                [ngClass]="{
+                  'won-status': getBidStatusLabel(bid) === 'Won',
+                  'outbid-status': getBidStatusLabel(bid) === 'Outbid'
+                }"
+              >{{ getBidStatusLabel(bid) }}</span>
+            </div>
+
+            <!-- Toggle Button -->
+            <button
+              class="toggle-details-button"
+              (click)="toggleBidDetails(i); $event.stopPropagation()"
+            >
+              {{ bid.showDetails ? '▲' : '▼' }}
+            </button>
+          </div>
+
+          <!-- Expanded Details Section -->
+          <div class="bid-details" *ngIf="bid.showDetails">
+            <h4>Auctioneer Details:</h4>
+            <p><strong>Name:</strong> {{ bid.auctioneerName }}</p>
+            <p><strong>Email:</strong> {{ bid.auctioneerEmail }}</p>
+            <p><strong>Phone:</strong> {{ bid.auctioneerPhone }}</p>
+            
+            <p><strong>Start Time:</strong> {{ bid.startTime }}</p>
+            <p><strong>End Time:</strong> {{ bid.endTime }}</p>
+            <p><strong>Left:</strong> {{ bid.remainingTime }}</p>
+            <p><strong>Status:</strong> {{ bid.statusMessage }}</p>
+          </div>
         </div>
       </div>
     </div>
+
+
+        <!-- Product Details Modal -->
+        <div class="product-details-modal" *ngIf="selectedProduct">
+          <div class="auction-status-info">
+            <ng-container [ngSwitch]="selectedProductStatus">
+              <div *ngSwitchCase="'active'">
+                <p><strong>Status:</strong> Active</p>
+                <p><strong>Time Remaining:</strong> {{ timeRemaining }}</p>
+              </div>
+              <div *ngSwitchCase="'upcoming'">
+                <p><strong>Status:</strong> Upcoming</p>
+                <p><strong>Auction Starts At:</strong> {{ selectedProduct.sessionDate }} {{ formatTime(selectedProduct.sessionTime) }}</p>
+              </div>
+              <div *ngSwitchCase="'sold'">
+                <p><strong>Status:</strong> Sold</p>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="modal-content">
+            <span class="close-button" (click)="closeProductDetails()">&times;</span>
+            <h2>{{ selectedProduct.productName }}</h2>
+            <img [src]="selectedProduct.productImage" alt="Product Image" />
+            <p><strong>Auctioneer Username:</strong> {{ selectedProduct.auctioneerName }}</p>
+            <p><strong>Email:</strong> {{ selectedProduct.auctioneerEmail }}</p>
+            <p><strong>Phone:</strong> {{ selectedProduct.auctioneerPhone }}</p>
+            <p><strong>Category:</strong> {{ selectedProduct.productCategory }}</p>
+            <p><strong>Starting Price:</strong> {{ selectedProduct.minimumPrice }}</p>
+            <p><strong>Quantity:</strong> {{ selectedProduct.quantity }}</p>
+            <p><strong>Condition:</strong> {{ selectedProduct.condition }}</p>
+            <p><strong>Warranty:</strong> {{ selectedProduct.warranty || 'N/A' }}</p>
+            <p><strong>Description:</strong> {{ selectedProduct.description }}</p>
+            <p><strong>Auction Start:</strong> {{ selectedProduct.sessionDate }} at {{ formatTime(selectedProduct.sessionTime) }}</p>
+            <p><strong>Auction End:</strong> {{ selectedProduct.endDate }} at {{ formatTime(selectedProduct.endTime) }}</p>
+          </div>
+                </div>
   </div>
 </body>
 

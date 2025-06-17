@@ -1,0 +1,128 @@
+<body>
+      <!-- 🔄 Global Loading Bar -->
+  <div *ngIf="isLoading" class="loading-bar"></div>
+  <div class="dashboard-container">
+    
+    <!-- 🏷️ Section Header -->
+    <div class="section-header">
+      <h2>Bidder Dashboard</h2>
+    </div>
+
+    <!-- 🧑 Bidder Details Section -->
+    <div class="section bidder-details">
+      <h3>Bidder Details</h3>
+      <div class="details">
+        <img
+          [src]="profileImageUrl"
+          alt="Bidder Profile"
+          *ngIf="profileImageUrl"
+          class="profile-img"
+        />
+        <div class="details-info">
+          <p><strong>Username:</strong> {{ bidderUsername }}</p>
+          <p><strong>Email:</strong> {{ bidderEmail }}</p>
+          <p><strong>Password:</strong>
+            <span [ngClass]="{ 'hidden': !passwordVisible }">{{ bidderPassword }}</span>
+            <button class="show-password-btn" (click)="togglePasswordVisibility()">
+              {{ passwordVisible ? 'Hide' : 'Show' }} Password
+            </button>
+          </p>
+          <p><strong>Address:</strong> {{ bidderAddress }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📦 Bid Summary -->
+    <div class="section bid-details">
+      <h3>Bid Summary</h3>
+      <div class="bid-info-grid">
+        <div class="stat-box"><p>Total Products</p><span>{{ totalBids }}</span></div>
+        <div class="stat-box"><p>Pending</p><span>{{ pendingBids }}</span></div>
+        <div class="stat-box"><p>Outbid</p><span>{{ outbidBids }}</span></div>
+        <div class="stat-box"><p>Won</p><span>{{ wonBids }}</span></div>
+      </div>
+    </div>
+
+    <!-- 📊 Bid Progress Section -->
+    <div class="section bid-status">
+      <h3>Bid Progress Status</h3>
+
+      <div class="progress-container">
+        <div class="progress-bar" [style.width]="bidProgress + '%'"></div>
+        <p>Progress: {{ bidProgress }}%</p>
+      </div>
+
+      <h4>Overall Bid Details</h4>
+
+      <!-- 📋 Bid Table with Scroll -->
+      <div class="bid-table-wrapper">
+        <div class="table-scroll-container">
+          <div class="scrollable-table" #scrollableTable>
+            <table class="bid-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product</th>
+                  <th>Status</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Basic Price</th>
+                  <th>Last Bid</th>
+                  <th>Profit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let bid of yourBids">
+                  <td>
+                    <img
+                      *ngIf="bid.productImage"
+                      [src]="bid.productImage"
+                      class="product-thumbnail"
+                    />
+                  </td>
+                  <td>{{ bid.productName }}</td>
+                  <td>
+                    <span class="status-badge"
+                      [ngClass]="{
+                        'status-won': getBidStatusLabel(bid) === 'Won',
+                        'status-outbid': getBidStatusLabel(bid) === 'Outbid',
+                        'status-pending': getBidStatusLabel(bid) === 'Update Bid'
+                      }"
+                    >
+                      {{ getBidStatusLabel(bid) }}
+                    </span>
+                  </td>
+                  <td>{{ bid.startDate }} {{ bid.startTime }}</td>
+                  <td>{{ bid.endDate }} {{ bid.endTime }}</td>
+                  <td>₹{{ bid.minimumPrice }}</td>
+                  <td>
+                    <div><strong>You:</strong> ₹{{ bid.bidderLastBid }}</div>
+                    <div><strong>Top:</strong> ₹{{ bid.highestBid }}</div>
+                  </td>
+                  <td>
+                    <div><strong>You:</strong> ₹{{ bid.profitFromBidderBid }}</div>
+                    <div><strong>Top:</strong> ₹{{ bid.profitFromHighestBid }}</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 🔁 Scroll Buttons -->
+        <div class="scroll-buttons">
+          <button class="scroll-button left" (click)="scrollTable('left')">←</button>
+          <button class="scroll-button right" (click)="scrollTable('right')">→</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔙 Back Button -->
+    <div class="back-button-wrapper">
+      <button class="back-button" (click)="goBack()">← Back</button>
+    </div>
+
+  </div>
+</body>
+
+

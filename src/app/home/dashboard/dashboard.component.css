@@ -1,7 +1,6 @@
-/* General Body Styling */
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(150deg, #6A11CB , #8C0B8E, #7B0EAC);
+  background: linear-gradient(150deg, #6A11CB, #8C0B8E, #7B0EAC);
   min-height: 100vh;
   width: 100%;
   margin: 0;
@@ -9,217 +8,474 @@ body {
   left: 0;
   display: flex;
   position: absolute;
-  justify-content: center;
+   justify-content: center;
   align-items: center;
 }
 
-/* Dashboard Container Styling */
 .dashboard-container {
-  width: 90%;
+  width: 95%;
   max-width: 1200px;
-  padding: 20px;
-  border-radius: 15px;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   color: #fff;
+  padding: 30px;
 }
 
-/* Section Headers */
 .section-header h2 {
   text-align: center;
   font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 20px;
-  color: #fff;
+  color: #ffdefa;
+  margin-bottom: 30px;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
-/* Section Styling */
 .section {
-  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
   padding: 20px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  color: #fff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 25px;
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease;
 }
 
 .section:hover {
-  transform: scale(1.05); /* Slightly enlarge the section */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Add a deeper shadow effect */
+  transform: scale(1.015);
 }
 
-/* Optional Glow Effect */
-.section:hover::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-  z-index: -1;
+/* Auctioneer Details Section */
+.auctioneer-details {
+  background: rgba(255, 255, 255, 0.034);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  padding: 25px;
+  transition: all 0.3s ease-in-out;
 }
 
-/* Headings Styling */
-h3, h4 {
+.auctioneer-details:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 28px rgba(255, 255, 255, 0.15);
+}
+
+.auctioneer-details h3 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #ffd6f0;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Details Layout */
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Info Styling */
+.details-info {
+  flex: 1;
+}
+
+.details-info p {
+  color: #ffffff;
+  font-size: 1rem;
+  margin: 10px 0;
+}
+
+.details-info strong {
+  color: #ffdefa;
+  font-weight: bold;
+}
+
+.details-info button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.details-info button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+
+/* Auction Info Grid Styling - Matches Bidder Stat Boxes */
+.auction-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 28px rgba(255, 255, 255, 0.15);
+}
+
+.stat-box p {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #ffb3ec;
+}
+
+.stat-box span {
   font-size: 1.8rem;
   font-weight: bold;
-  margin-bottom: 15px;
-  text-align: center;
-  color: #ffdfba;
-  text-transform: capitalize;
+  color: #ffffff;
 }
 
-/* Paragraph Styling */
-p {
-  margin: 8px 0;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #fff;
+
+/* Auction Progress Section Styling */
+.auction-status {
+  margin-bottom: 30px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transition: 0.3s ease-in-out;
 }
 
-/* Image Styling */
-img {
-  width: 100px; /* Reduce the width */
-  height: 100px; /* Reduce the height */
-  border-radius: 50%; /* Keep it round */
-  border: 2px solid rgba(255, 255, 255, 0.5); /* Optional: Adjust border */
-  margin-bottom: 10px;
-  transition: transform 0.3s ease-in-out;
+.auction-status:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 22px rgba(255, 255, 255, 0.2);
 }
 
-img:hover {
-  transform: scale(1.05);
-}
-
-/* Buttons Styling */
-button {
-  padding: 7px 13px;
-  font-size: 1rem;
-  color: #fff;
-  background: linear-gradient(135deg, #ff758c, #6a11cb);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-button:hover {
-  background: linear-gradient(135deg, #ff7eb3, #2575fc);
-  transform: scale(1.05);
-}
-
-/* Inputs Styling */
-input[type="text"], input[type="password"], select {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  font-size: 1rem;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 5px;
-  outline: none;
-  transition: box-shadow 0.3s ease;
-}
-
-input:focus, select:focus {
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-}
-
-/* Progress Bar Styling */
+/* Auction Progress Bar */
 .progress-container {
+  margin: 15px 0;
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  padding: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 8px;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.2);
 }
 
 .progress-bar {
-  height: 20px;
-  background: linear-gradient(90deg, #6a11cb, #2575fc);
-  border-radius: 5px;
-  animation: progressAnimation 2s ease-in-out;
+  height: 22px;
+  background: linear-gradient(to right, #6a11cb, #ff8cc6);
+  border-radius: 10px;
+  transition: width 1.8s ease;
+  width: 0%;
 }
 
-@keyframes progressAnimation {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
+/* Progress Text */
+.progress-container p {
+  text-align: center;
+  margin-top: 10px;
+  color: #ffb3ec;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-/* Responsive Media Queries */
-@media (max-width: 768px) {
+/* Table Scroll Wrapper */
+.table-scroll-wrapper {
+  max-height: 350px;      /* Fixed height */
+  overflow-y: auto;       /* Vertical scroll */
+  overflow-x: auto; 
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* Table Style */
+.table-scroll-wrapper table {
+  width: 100%;
+  min-width: 960px;
+  border-collapse: collapse;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.table-scroll-wrapper th,
+.table-scroll-wrapper td {
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table-scroll-wrapper thead {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.table-scroll-wrapper th {
+  color: #ffdefa;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* Product Image Styling */
+.table-scroll-wrapper td img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Profit % Color Logic (Optional: Add classes dynamically for color coding) */
+.table-scroll-wrapper td[data-label="Profit"] {
+  font-weight: bold;
+}
+
+/* Scroll Buttons */
+.scroll-buttons {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.scroll-left,
+.scroll-right {
+  padding: 8px 16px;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, #8e2de2, #6a11cb);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-left:hover,
+.scroll-right:hover {
+  background: linear-gradient(135deg, #a94acb, #4c0f99);
+  transform: scale(1.08);
+}
+/* Buttons */
+button {
+  padding: 8px 15px;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #c471ed, #6a11cb);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #a94acb, #3b0f80);
+  transform: scale(1.05);
+}
+
+
+/* Back Button Wrapper */
+.back-button-wrapper {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.back-button {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #ff8cc6, #8e2de2);
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, #e75cb1, #6a11cb);
+}
+/* -----------------------------
+   Responsive Styles
+------------------------------ */
+
+/* Tablet View (768px to 991px) */
+@media screen and (max-width: 991px) {
   .dashboard-container {
-    width: 95%;
-    padding: 15px;
+    padding: 20px;
   }
 
   .section-header h2 {
     font-size: 2rem;
   }
 
-  .section {
-    padding: 15px;
+  .auctioneer-details h3,
+  .section h3,
+  .section h4 {
+    font-size: 1.4rem;
   }
 
-  h3, h4 {
-    font-size: 1.5rem;
+  .details {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
-  img {
-    width: 80px;
-    height: 80px;
+  .details-info {
+    width: 100%;
   }
 
-  button {
-    padding: 6px 10px;
-    font-size: 0.9rem;
+  .profile-img {
+    width: 90px;
+    height: 90px;
   }
 
-  input[type="text"], input[type="password"], select {
-    padding: 8px;
-    font-size: 0.9rem;
+  .auction-info-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   }
 
-  table th, table td {
-    font-size: 0.9rem;
+  .table-scroll-wrapper table {
+    font-size: 0.85rem;
+    min-width: 800px;
+  }
+
+  .scroll-left,
+  .scroll-right {
+    font-size: 1rem;
+    padding: 6px 12px;
+  }
+
+  .stat-box span {
+    font-size: 1.4rem;
+  }
+
+  .stat-box p {
+    font-size: 0.95rem;
   }
 }
 
-@media (max-width: 480px) {
-  .section-header h2 {
-    font-size: 1.8rem;
+/* Mobile View (≤ 767px) */
+@media screen and (max-width: 767px) {
+  .dashboard-container {
+    padding: 15px;
   }
 
-  h3, h4 {
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .auctioneer-details h3,
+  .section h3,
+  .section h4 {
     font-size: 1.2rem;
   }
 
-  p {
+  .details {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .details-info p {
     font-size: 0.9rem;
   }
 
-  img {
-    width: 70px;
-    height: 70px;
+  .profile-img {
+    width: 75px;
+    height: 75px;
+  }
+
+  .auction-info-grid {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 15px;
+  }
+
+  .stat-box span {
+    font-size: 1.2rem;
+  }
+
+  .stat-box p {
+    font-size: 0.85rem;
+  }
+
+  .progress-bar {
+    height: 18px;
+  }
+
+  .table-scroll-wrapper {
+    padding: 8px;
+    margin-top: 15px;
+  }
+
+  .table-scroll-wrapper table {
+    font-size: 0.8rem;
+    min-width: 680px;
+  }
+
+  .scroll-buttons {
+    justify-content: center;
+    gap: 15px;
+    flex-direction: row;
+  }
+
+  .scroll-left,
+  .scroll-right {
+    padding: 6px 10px;
+    font-size: 1rem;
+  }
+
+  .back-button {
+    font-size: 0.9rem;
+    padding: 8px 14px;
   }
 
   button {
-    padding: 5px 8px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    padding: 7px 12px;
   }
+}
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(to right, #2196f3, #42a5f5, #64b5f6);
+  z-index: 10000;
+  animation: loadingSlide 1.5s infinite ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
 
-  input[type="text"], input[type="password"], select {
-    padding: 6px;
-    font-size: 0.8rem;
-  }
+@keyframes loadingSlide {
+  0% { transform: scaleX(0); transform-origin: left; }
+  50% { transform: scaleX(0.5); transform-origin: center; }
+  100% { transform: scaleX(1); transform-origin: right; }
 }

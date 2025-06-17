@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { v4 as uuidv4 } from 'uuid';
-import { Firestore, doc, setDoc, getDocs, collection, query, getDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, getDocs, collection, query, getDoc, writeBatch } from '@angular/fire/firestore';
 import { AuthService } from '../../../auth.service'; // Import the AuthService
 
 @Component({
@@ -31,9 +31,19 @@ export class AuctioneerComponent implements OnInit {
   activeAuctions = 0;
   upcomingAuctions = 0;
   soldProducts = 0;
+  auctioneerUID: string | null = null; // Store UID
+  isMenuOpen: boolean = false;
+  isSubMenuOpen: boolean = false;
+  searchTerm: string = '';
+  selectedStatus: string = 'all';
+  selectedCategory: string = 'all';
+  isLoading: boolean = false; // For initial loading and filtering
+  noProductsFound: boolean = false; // Show if filtered results are empty
+
 
   @ViewChild('products') productsSection!: ElementRef;
   isProductSubmitted: boolean | undefined;
+  uid: any;
 
   constructor(private fb: FormBuilder, private router: Router, private firestore: Firestore, private authService: AuthService) {
     this.auctionForm = this.fb.group({
@@ -53,7 +63,7 @@ export class AuctioneerComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkAuthentication();
-    this.loadProducts();
+    setInterval(() => this.updateProductStatuses(), 60000); // Update statuses every 60 seconds
   }
   
   formatTime(time: string): string {
@@ -101,14 +111,16 @@ export class AuctioneerComponent implements OnInit {
   }
   
   
-  filterProductsByStatus(event: Event): void {
-    const filterValue = (event.target as HTMLSelectElement).value;
-    const currentDate = new Date();
-  
+filterProductsByStatus(event: Event): void {
+  this.isLoading = true;
+  const filterValue = (event.target as HTMLSelectElement).value;
+  const currentDate = new Date();
+
+  setTimeout(() => { // Simulate loading
     this.filteredProducts = this.products.filter(product => {
       const startDate = new Date(product.sessionDate + 'T' + product.sessionTime);
       const endDate = new Date(product.endDate + 'T' + product.endTime);
-  
+
       if (filterValue === 'active') {
         return currentDate >= startDate && currentDate <= endDate;
       } else if (filterValue === 'upcoming') {
@@ -116,45 +128,59 @@ export class AuctioneerComponent implements OnInit {
       } else if (filterValue === 'sold-out') {
         return currentDate > endDate;
       }
-      return true; // Show all for 'all'
+      return true;
     });
+
+    this.noProductsFound = this.filteredProducts.length === 0;
+    this.isLoading = false;
+  }, 500);
+}
+
+
+  getStatusClass(product: any): string {
+    const status = this.getProductStatus(product).toLowerCase();
+  
+    if (status.startsWith('upcoming')) {
+      return 'upcoming';
+    } else if (status.includes('active')) {
+      return 'active';
+    } else if (status.includes('sold')) {
+      return 'sold';
+    } else {
+      return 'unknown';
+    }
   }
+  
   
 
   // Check if the auctioneer is authenticated using AuthService
-  async checkAuthentication() {
-    const email = this.authService.getUserEmail(); // Get email from AuthService
-    if (email) {
-      this.auctioneerEmail = email;
-      this.isAuthenticated = true;
-      this.loadAuctioneerProfile(); // Load auctioneer profile once authenticated
-    } else {
-      this.isAuthenticated = false;
-      this.router.navigate(['/login']); // Redirect to login if not authenticated
-    }
+async checkAuthentication() {
+  const uid = this.authService.getUserId(); // Get UID from AuthService
+  if (uid) {
+    this.isAuthenticated = true;
+    this.auctioneerUID = uid; // Store UID
+    await this.loadAuctioneerProfile(uid); // Load profile using UID
+    await this.loadProducts(uid);          // Load products using UID
+  } else {
+    this.isAuthenticated = false;
+    this.router.navigate(['/login']);
   }
+}
 
 
 // Load auctioneer profile information (username, email, and profile image URL)
-async loadAuctioneerProfile() {
-  if (this.auctioneerEmail) {
-    try {
-      const auctioneerRef = doc(this.firestore, `auctioneers/${this.auctioneerEmail}`);
-      const auctioneerDoc = await getDoc(auctioneerRef);
+async loadAuctioneerProfile(uid: string) {
+  try {
+    const auctioneerRef = doc(this.firestore, `auctioneers/${uid}`);
+    const auctioneerDoc = await getDoc(auctioneerRef);
 
-      if (auctioneerDoc.exists()) {
-        const auctioneerData = auctioneerDoc.data();
-        this.auctioneerUsername = auctioneerData?.['username'] || 'Auctioneer';
-        const encryptedProfileImage = auctioneerData?.['profileImage'] || null;
-        if (encryptedProfileImage) {
-          this.profileImageUrl = this.decryptImage(encryptedProfileImage); // Decrypt profile image
-        }
-      } else {
-        console.log("No such document!");
-      }
-    } catch (error) {
-      console.error("Error getting auctioneer profile:", error);
+    if (auctioneerDoc.exists()) {
+      const auctioneerData = auctioneerDoc.data();
+      this.auctioneerUsername = auctioneerData['username'];
+      this.profileImageUrl = atob(auctioneerData['profileImage']); // decrypt image
     }
+  } catch (error) {
+    console.error('Error loading profile:', error);
   }
 }
 
@@ -185,28 +211,40 @@ async loadAuctioneerProfile() {
 
   // Filter products based on category
   filterCategory(category: string): void {
-    if (category === 'all') {
-      // Display all products
-      this.filteredProducts = [...this.products]; // Clone the original product list
-    } else {
-      // Filter products by category
-      this.filteredProducts = this.products.filter(
-        (product) => product.productCategory === category
-      );
-    }
+    this.isLoading = true;
+    setTimeout(() => {
+      if (category === 'all') {
+        this.filteredProducts = [...this.products];
+      } else {
+        this.filteredProducts = this.products.filter(
+          (product) => product.productCategory === category
+        );
+      }
+
+      this.noProductsFound = this.filteredProducts.length === 0;
+      this.isLoading = false;
+      this.isSubMenuOpen = false;
+    }, 500);
   }
+
   
 
   searchProducts(event: Event): void {
+    this.isLoading = true;
     const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
 
-    if (searchTerm) {
-      this.filteredProducts = this.products.filter(product =>
-        product.productName.toLowerCase().includes(searchTerm)
-      );
-    } else {
-      this.filteredProducts = [...this.products]; // Reset to all products when search is cleared
-    }
+    setTimeout(() => {
+      if (searchTerm) {
+        this.filteredProducts = this.products.filter(product =>
+          product.productName.toLowerCase().includes(searchTerm)
+        );
+      } else {
+        this.filteredProducts = [...this.products];
+      }
+
+      this.noProductsFound = this.filteredProducts.length === 0;
+      this.isLoading = false;
+    }, 500);
   }
 
 
@@ -221,68 +259,149 @@ async loadAuctioneerProfile() {
   }
 
   // Handle form submission and store the product
-  async submitProduct(): Promise<void> {
-    if (this.auctionForm.valid && this.selectedImage) {
-      const { productName, minimumPrice, productCategory, quantity, condition, warranty, description, sessionDate, sessionTime, endDate, endTime } = this.auctionForm.value;
-      const encryptedImage = this.encryptImage(this.selectedImage);
-      const productId = uuidv4(); // Generate a unique ID for the product
+async submitProduct(): Promise<void> {
+  this.isLoading = true;
+  if (this.auctionForm.valid && this.selectedImage && this.auctioneerUID) {
+    const {
+      productName,
+      minimumPrice,
+      productCategory,
+      quantity,
+      condition,
+      warranty,
+      description,
+      sessionDate,
+      sessionTime,
+      endDate,
+      endTime
+    } = this.auctionForm.value;
+
+    const encryptedImage = this.encryptImage(this.selectedImage);
+    const productId = uuidv4();
+
+    const currentDate = new Date();
+    const productStartDate = new Date(sessionDate + 'T' + sessionTime);
+    const productEndDate = new Date(endDate + 'T' + endTime);
+
+    let status: string;
+    if (currentDate < productStartDate) {
+      status = 'Upcoming';
+    } else if (currentDate >= productStartDate && currentDate <= productEndDate) {
+      status = 'Active';
+    } else {
+      status = 'Sold';
+    }
+
+    try {
+      // ✅ Store under UID instead of email
+      await setDoc(doc(this.firestore, `auctioneers/${this.auctioneerUID}/products`, productId), {
+        productId,
+        productName,
+        minimumPrice,
+        productCategory,
+        quantity,
+        condition,
+        warranty,
+        description,
+        sessionDate,
+        sessionTime,
+        endDate,
+        endTime,
+        productImage: encryptedImage,
+        status
+      });
+
+      this.successMessage = 'Product added successfully!';
+      setTimeout(() => this.successMessage = '', 3000);
+
+      this.auctionForm.reset();
+      this.selectedImage = null;
+      this.isSubmitDisabled = true;
+      this.loadProducts(this.auctioneerUID);
+    } catch (error) {
+      console.error('Error storing product:', error);
+    }finally {
+    this.isLoading = false;
+  }
+  }
+}
+
   
-      // Store product in Firestore
-      try {
-        await setDoc(doc(this.firestore, `auctioneers/${this.auctioneerEmail}/products`, productId), {
-          productId, // Store the product ID for reference
-          productName,
-          minimumPrice,
-          productCategory,
-          quantity,
-          condition,
-          warranty,
-          description,
-          sessionDate,
-          sessionTime,
-          endDate,
-          endTime,
-          productImage: encryptedImage, // Store encrypted image
-        });
-  
-        // Show success message
-        this.successMessage = 'Product added successfully!';
-        setTimeout(() => this.successMessage = '', 3000); // Clear the message after 3 seconds
-  
-        // Reset form after successful submission
-        this.auctionForm.reset();
-        this.selectedImage = null;
-        this.isSubmitDisabled = true;
-        this.loadProducts(); // Reload the products list
-      } catch (error) {
-        console.error('Error storing product:', error);
-      }
+  // Function to periodically update product statuses in the database
+// Complete this inside your component
+async updateProductStatuses(): Promise<void> {
+  if (this.auctioneerUID) {
+    try {
+      const productsQuery = query(collection(this.firestore, `auctioneers/${this.auctioneerUID}/products`));
+      const querySnapshot = await getDocs(productsQuery);
+
+      const batch = writeBatch(this.firestore);
+      const currentDate = new Date();
+
+      querySnapshot.forEach(docSnapshot => {
+        const product = docSnapshot.data();
+        const docRef = doc(this.firestore, `auctioneers/${this.auctioneerUID}/products/${docSnapshot.id}`);
+
+        const productStart = new Date(product['sessionDate'] + 'T' + product['sessionTime']);
+        const productEnd = new Date(product['endDate'] + 'T' + product['endTime']);
+
+        let newStatus = product['status'];
+
+        if (currentDate < productStart) {
+          newStatus = 'Upcoming';
+        } else if (currentDate >= productStart && currentDate <= productEnd) {
+          newStatus = 'Active';
+        } else if (currentDate > productEnd) {
+          newStatus = 'Sold';
+        }
+
+        if (newStatus !== product['status']) {
+          batch.update(docRef, { status: newStatus });
+        }
+      });
+
+      await batch.commit();
+      this.loadProducts(this.auctioneerUID); // Refresh products
+    } catch (error) {
+      console.error('Error updating product statuses:', error);
     }
   }
-  
+}
+
 
 
   // Retrieve products from Firestore
-  async loadProducts(): Promise<void> {
-    if (this.auctioneerEmail) {
-      try {
-        const productsQuery = query(collection(this.firestore, `auctioneers/${this.auctioneerEmail}/products`));
-        const querySnapshot = await getDocs(productsQuery);
-        this.products = querySnapshot.docs.map(doc => ({
-          ...doc.data(),
-          productImage: this.decryptImage(doc.data()['productImage']), // Decrypt the image
-        }));
+async loadProducts(uid: string) {
+  this.isLoading = true; // Start loading
+  this.noProductsFound = false;
 
-        this.filteredProducts = [...this.products];
-      } catch (error) {
-        console.error('Error loading products:', error);
-      }
-    }
-  }
+  try {
+    const productsRef = collection(this.firestore, `auctioneers/${uid}/products`);
+    const querySnapshot = await getDocs(productsRef);
+    this.products = [];
 
-  viewProductDetails(product: any): void {
-    this.selectedProduct = product; // Set the selected product for display
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+        if (data['productImage']) {
+    data['productImage'] = this.decryptImage(data['productImage']); // ✅ Decode base64 image
   }
+      this.products.push(data); // No need to check UID again here
+    });
+
+    this.filteredProducts = [...this.products];
+    this.totalProducts = this.products.length; // This also needs UID fix (see below)
+  } catch (error) {
+    console.error('Error loading products:', error);
+  }
+  finally {
+  this.isLoading = false;
+  } // Stop loading
+}
+
+async viewProductDetails(product: any) {
+  this.selectedProduct = product;
+}
+
   
   closeProductDetails(): void {
     this.selectedProduct = null; // Clear the selected product to hide the modal
@@ -326,4 +445,18 @@ async loadAuctioneerProfile() {
     this.selectedImage = null;
     this.isSubmitDisabled = true;
   }
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+  
+  toggleSubMenu(): void {
+    this.isSubMenuOpen = !this.isSubMenuOpen;
+  }
+
+  logout(): void {
+  this.authService.logout();         // Clear session
+  this.router.navigate(['/login']);  // Redirect to login page
+}
+
+
 }
